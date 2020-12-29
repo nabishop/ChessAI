@@ -36,9 +36,10 @@ public class MoveEngine {
             MovePossibility maxMovePos = null;
             for (MovePossibility maxPos : getAllPossibleMoves(color, recurseBoard)) {
                 MovePossibility  minPos = getNextBestMoveRecurse(this.otherColor, depth - 1, maxPos.getBoard());
-                System.out.println("MAX: " + max_value + " AI SCORE: " + minPos.getAiScore() + " OTHER SCORE: " + minPos.getOtherScore());
-                if (minPos.getAiScore() > max_value) {
-                    max_value = minPos.getAiScore();
+                //System.out.println("MAX: " + max_value + " AI SCORE: " + minPos.getAiScore() + " OTHER SCORE: " + minPos.getOtherScore());
+                int value = minPos.getAiScore() - minPos.getOtherScore();
+                if (value > max_value) {
+                    max_value = value;
                     maxMovePos = maxPos;
                 }
             }
@@ -50,9 +51,10 @@ public class MoveEngine {
             MovePossibility minMovePos = null;
             for (MovePossibility minPos : getAllPossibleMoves(color, recurseBoard)) {
                 MovePossibility  maxPos = getNextBestMoveRecurse(this.aiColor, depth - 1, minPos.getBoard());
-                System.out.println("MIN: " + min_value + " AI SCORE: " + maxPos.getAiScore() + " OTHER SCORE: " + maxPos.getOtherScore());
-                if (maxPos.getAiScore() < min_value) {
-                    min_value = maxPos.getAiScore();
+                //System.out.println("MIN: " + min_value + " AI SCORE: " + maxPos.getAiScore() + " OTHER SCORE: " + maxPos.getOtherScore());
+                int value = maxPos.getOtherScore() - maxPos.getAiScore();
+                if (value < min_value) {
+                    min_value = value;
                     minMovePos = minPos;
                 }
             }

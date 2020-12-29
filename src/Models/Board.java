@@ -63,6 +63,7 @@ public class Board {
     public String toString() {
         StringBuilder boardStr = new StringBuilder();
         for (int i = 0; i < BOARD_SIZE; i++) {
+            boardStr.append(BOARD_SIZE - i).append(" ");
             for (int j = 0; j < BOARD_SIZE; j++) {
                 Piece piece = board[i][j];
 
@@ -75,6 +76,12 @@ public class Board {
             }
             boardStr.append("\n");
         }
+        boardStr.append("  ");
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            boardStr.append(String.format("%2s", Character.toString('A' + i)));
+        }
+        boardStr.append("\n");
+
         return boardStr.toString();
     }
 
