@@ -15,21 +15,21 @@ public class MoveEngine {
         this.boardObj = boardObj;
     }
 
-    public Move getNextBestMove() {
-        List<Move> moves = getAllPossibleMoves();
+    public Move getNextBestMove(String color) {
+        List<Move> moves = getAllPossibleMoves(color);
         moves.removeAll(Collections.singleton(null));
-        Collections.sort(moves);
+        Collections.sort(moves, Collections.reverseOrder());
         return moves.get(0);
     }
 
-    private List<Move> getAllPossibleMoves() {
+    private List<Move> getAllPossibleMoves(String color) {
         List<Move> moves = new ArrayList<>();
         Piece[][] board = boardObj.getBoard();
 
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 Piece piece = board[i][j];
-                if (piece == null) {
+                if (piece == null || !piece.getColor().equals(color)) {
                     continue;
                 }
 
@@ -110,16 +110,18 @@ public class MoveEngine {
         Pawn pawn = (Pawn) piece;
 
         // up 2 if not moved
-        // up 1 if moved
-        // diag right if opposing piece
-        // diag left if opposing piece
-        moves.add(evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ));
-        if (!pawn.isMoved()) {
+        if (!pawn.isMoved() && startI + 2 < board.length && board[startI + 1][startJ] != null) {
             moves.add(evaluateAddMove(board, piece, startI, startJ, startI + 2, startJ));
         }
+        // up 1 if moved
+        if (startI + 1 < board.length && board[startI + 1][startJ] != null) {
+            moves.add(evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ));
+        }
+        // diag right if opposing piece
         if (startI + 1 < board.length && startJ + 1 < board.length && board[startI + 1][startJ + 1] != null) {
             moves.add(evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ + 1));
         }
+        // diag left if opposing piece
         if (startI + 1 < board.length && startJ - 1 > 0 && board[startI + 1][startJ - 1] != null) {
             moves.add(evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ - 1));
         }
@@ -144,34 +146,34 @@ public class MoveEngine {
         // up right
         for (int i = startI + 1, j = startJ + 1; i < board.length && j < board.length; i++, j++) {
             Move move = evaluateAddMove(board, piece, startI, startJ, i, j);
+            moves.add(move);
             if (move == null || move.isCapture()) {
                 break;
             }
-            moves.add(move);
         }
         // up left
         for (int i = startI + 1, j = startJ - 1; i < board.length && j >= 0; i++, j--) {
             Move move = evaluateAddMove(board, piece, startI, startJ, i, j);
+            moves.add(move);
             if (move == null || move.isCapture()) {
                 break;
             }
-            moves.add(move);
         }
         // bottom right
         for (int i = startI - 1, j = startJ + 1; i >= 0 && j < board.length; i--, j++) {
             Move move = evaluateAddMove(board, piece, startI, startJ, i, j);
+            moves.add(move);
             if (move == null || move.isCapture()) {
                 break;
             }
-            moves.add(move);
         }
         // bottom left
         for (int i = startI - 1, j = startJ - 1; i >= 0 && j >= 0; i--, j--) {
             Move move = evaluateAddMove(board, piece, startI, startJ, i, j);
+            moves.add(move);
             if (move == null || move.isCapture()) {
                 break;
             }
-            moves.add(move);
         }
 
         return moves;
@@ -183,34 +185,34 @@ public class MoveEngine {
         // up
         for (int i = startI + 1; i < board.length; i++) {
             Move move = evaluateAddMove(board, piece, startI, startJ, i, startJ);
+            moves.add(move);
             if (move == null || move.isCapture()) {
                 break;
             }
-            moves.add(move);
         }
         // down
         for (int i = startI - 1; i >= 0; i--) {
             Move move = evaluateAddMove(board, piece, startI, startJ, i, startJ);
+            moves.add(move);
             if (move == null || move.isCapture()) {
                 break;
             }
-            moves.add(move);
         }
         // right
         for (int j = startJ + 1; j < board.length; j++) {
             Move move = evaluateAddMove(board, piece, startI, startJ, startI, j);
+            moves.add(move);
             if (move == null || move.isCapture()) {
                 break;
             }
-            moves.add(move);
         }
         // left
         for (int j = startJ - 1; j >= 0; j--) {
             Move move = evaluateAddMove(board, piece, startI, startJ, startI, j);
+            moves.add(move);
             if (move == null || move.isCapture()) {
                 break;
             }
-            moves.add(move);
         }
 
         return moves;
