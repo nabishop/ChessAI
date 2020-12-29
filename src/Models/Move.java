@@ -18,9 +18,9 @@ public class Move {
 
     private int[] getPosFromString(String str) {
         int[] pos = new int[2];
-        int asciiA = 97;
+        int asciiLowerA = 97;
         int i = Math.abs(8 - Integer.parseInt(str.substring(1)));
-        int j = asciiA - str.charAt(0);
+        int j = str.charAt(0) - asciiLowerA;
 
         if (j > 7) {
             System.out.println("Invalid Input: " + str);

@@ -80,6 +80,8 @@ public class Board {
         if (movePiece == null) {
             return -1;
         }
+        System.out.println("fromI: " + move.getFromI() + " fromJ: " +move.getFromJ());
+        System.out.println("toI: " + move.getToI() + " toJ: " +move.getToJ());
 
         Piece toPiece = board[move.getToI()][move.getToJ()];
         // check if the piece is being moved to a spot of the same color
@@ -90,8 +92,6 @@ public class Board {
 
         int iDiff = Math.abs(move.getFromI() - move.getToI());
         int jDiff = Math.abs(move.getFromJ() - move.getToJ());
-        System.out.println("fromI: " + move.getFromI() + " fromJ: " +move.getFromJ());
-        System.out.println("toI: " + move.getToI() + " toJ: " +move.getToJ());
         System.out.println("iDiff: " + iDiff + " jDiff: " +jDiff);
 
         // makes sure piece moved
