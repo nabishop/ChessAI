@@ -7,6 +7,6 @@ public class Knight extends Piece{
 
     @Override
     public String toString() {
-        return super.getColor().equals("white") ? "\u2658" : "\u265E";
+        return super.getColor().equals("black") ? "\u2658" : "\u265E";
     }
 }

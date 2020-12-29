@@ -7,6 +7,6 @@ public class Rook extends Piece {
 
     @Override
     public String toString() {
-        return super.getColor().equals("white") ? "\u2656" : "\u265C";
+        return super.getColor().equals("black") ? "\u2656" : "\u265C";
     }
 }

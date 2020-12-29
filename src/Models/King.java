@@ -7,6 +7,6 @@ public class King extends Piece{
 
     @Override
     public String toString() {
-        return super.getColor().equals("white") ? "\u2654" : "\u265A";
+        return super.getColor().equals("black") ? "\u2654" : "\u265A";
     }
 }

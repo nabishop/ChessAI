@@ -7,6 +7,6 @@ public class Bishop extends Piece {
 
     @Override
     public String toString() {
-        return super.getColor().equals("white") ? "\u2657" : "\u265D";
+        return super.getColor().equals("black") ? "\u2657" : "\u265D";
     }
 }
