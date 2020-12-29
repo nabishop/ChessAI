@@ -1,10 +1,11 @@
+import Engine.MoveEngine;
 import Models.Board;
 import Models.Move;
 
 public class Main {
     public static void main(String[] args) {
         Board board = new Board();
-        System.out.println(board.toString());
+        MoveEngine moveEngine = new MoveEngine(board);
         UX ux = new UX();
 
         boolean enemyWhite = ux.getEnemyColor().equals("white");

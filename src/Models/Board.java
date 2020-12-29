@@ -1,11 +1,18 @@
 package Models;
+import Engine.MoveEngine;
 
 public class Board {
     private static final int BOARD_SIZE = 8;
     private final Piece[][] board;
+    private boolean whiteCheck = false;
+    private boolean blackCheck = false;
 
     public Board() {
         this.board = createBoard();
+    }
+
+    public Piece[][] getBoard() {
+        return board;
     }
 
     private Piece[][] createBoard() {

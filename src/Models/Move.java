@@ -5,6 +5,7 @@ public class Move {
     private final int fromJ;
     private final int toI;
     private final int toJ;
+    private boolean capture = false;
 
     public Move(String from, String to) {
         int[] fromPos = getPosFromString(from);
@@ -14,6 +15,18 @@ public class Move {
         int[] toPos = getPosFromString(to);
         this.toI = toPos[0];
         this.toJ = toPos[1];
+    }
+
+    public Move(int fromI, int fromJ, int toI, int toJ, boolean capture) {
+        this.fromI = fromI;
+        this.fromJ = fromJ;
+        this.toI = toI;
+        this.toJ = toJ;
+        this.capture = capture;
+    }
+
+    public boolean isCapture() {
+        return capture;
     }
 
     private int[] getPosFromString(String str) {
