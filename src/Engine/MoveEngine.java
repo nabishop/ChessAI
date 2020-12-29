@@ -20,7 +20,7 @@ public class MoveEngine {
     }
 
     public Move getNextBestMove() {
-        int depth = 4;
+        int depth = 6;
 
         MovePossibility nextMove = getNextBestMoveRecurse(this.aiColor, depth, boardObj);
         return nextMove.getMove();

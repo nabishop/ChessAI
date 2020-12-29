@@ -189,6 +189,7 @@ public class Board {
         // cannot hop over pieces in path
         boolean iAdd = move.getToI() - move.getFromI() > 0;
         boolean jAdd = move.getToJ() - move.getFromJ() > 0;
+        Piece startPiece = board[move.getFromI()][move.getFromJ()];
 
         int nextI = move.getFromI();
         int nextJ = move.getFromJ();
@@ -196,8 +197,13 @@ public class Board {
             nextI = iAdd ? nextI + 1 : nextI - 1;
             nextJ = jAdd ? nextJ + 1 : nextJ - 1;
             Piece piece = board[nextI][nextJ];
-            if (piece != null) {
+            if (piece != null && piece.getColor().equals(startPiece.getColor())) {
                 return false;
+            }
+            if (piece != null && !piece.getColor().equals(startPiece.getColor())) {
+                if (x + 1 < iDiff) {
+                    return false;
+                }
             }
         }
         return true;
