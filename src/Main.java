@@ -5,8 +5,8 @@ import Models.Move;
 public class Main {
     public static void main(String[] args) {
         Board board = new Board();
-        MoveEngine moveEngine = new MoveEngine(board);
         UX ux = new UX();
+        MoveEngine moveEngine = new MoveEngine(board, ux.getEnemyColor().equals("white") ? "black" : "white");
 
         boolean enemyWhite = ux.getEnemyColor().equals("white");
         boolean whiteTurn = true;
@@ -14,7 +14,7 @@ public class Main {
             System.out.println(board.toString());
             System.out.println(whiteTurn == enemyWhite ? "YOU" : "COMPUTER");
             if (whiteTurn != enemyWhite) {
-                Move move = moveEngine.getNextBestMove(whiteTurn ? "white" : "black");
+                Move move = moveEngine.getNextBestMove();
                 board.makeMove(move);
             }
             else {

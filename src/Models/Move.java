@@ -5,7 +5,7 @@ public class Move implements Comparable<Move>{
     private final int fromJ;
     private final int toI;
     private final int toJ;
-    private Boolean capture = false;
+    private Integer moveValue = 0;
 
     public Move(String from, String to) {
         int[] fromPos = getPosFromString(from);
@@ -17,16 +17,16 @@ public class Move implements Comparable<Move>{
         this.toJ = toPos[1];
     }
 
-    public Move(int fromI, int fromJ, int toI, int toJ, boolean capture) {
+    public Move(int fromI, int fromJ, int toI, int toJ, int moveValue) {
         this.fromI = fromI;
         this.fromJ = fromJ;
         this.toI = toI;
         this.toJ = toJ;
-        this.capture = capture;
+        this.moveValue = moveValue;
     }
 
-    public boolean isCapture() {
-        return capture;
+    public Integer getMoveValue() {
+        return moveValue;
     }
 
     private int[] getPosFromString(String str) {
@@ -63,6 +63,6 @@ public class Move implements Comparable<Move>{
 
     @Override
     public int compareTo(Move o) {
-        return this.capture.compareTo(o.capture);
+        return this.moveValue.compareTo(o.moveValue);
     }
 }

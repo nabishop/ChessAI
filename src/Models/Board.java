@@ -11,6 +11,10 @@ public class Board {
         this.board = createBoard();
     }
 
+    public Board(Piece[][] board) {
+        this.board = board;
+    }
+
     public Piece[][] getBoard() {
         return board;
     }
