@@ -1,11 +1,11 @@
 package Models;
 
-public class Move {
+public class Move implements Comparable<Move>{
     private final int fromI;
     private final int fromJ;
     private final int toI;
     private final int toJ;
-    private boolean capture = false;
+    private Boolean capture = false;
 
     public Move(String from, String to) {
         int[] fromPos = getPosFromString(from);
@@ -59,5 +59,10 @@ public class Move {
 
     public int getToJ() {
         return toJ;
+    }
+
+    @Override
+    public int compareTo(Move o) {
+        return this.capture.compareTo(o.capture);
     }
 }

@@ -11,16 +11,11 @@ public class Main {
         boolean enemyWhite = ux.getEnemyColor().equals("white");
         boolean whiteTurn = true;
         while (!board.isCheckmate()) {
-            if (whiteTurn && enemyWhite) {
-                while(true) {
-                    Move move = ux.getNextMove(whiteTurn);
-                    boolean canMakeMove = board.canMakeMove(move);
-                    if (canMakeMove) {
-                        board.makeMove(move);
-                        break;
-                    }
-                    System.out.println("error making move");
-                }
+            System.out.println(board.toString());
+            System.out.println(whiteTurn == enemyWhite ? "YOU" : "COMPUTER");
+            if (whiteTurn != enemyWhite) {
+                Move move = moveEngine.getNextBestMove();
+                board.makeMove(move);
             }
             else {
                 while(true) {
@@ -33,8 +28,6 @@ public class Main {
                     System.out.println("error making move");
                 }
             }
-            System.out.println(board.toString());
-            System.out.println("white turn: " + whiteTurn);
             whiteTurn = !whiteTurn;
         }
     }

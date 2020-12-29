@@ -12,7 +12,7 @@ public class UX {
     }
 
     private void getUserColor() {
-        System.out.println("Are you white?");
+        System.out.println("Is the enemy white?");
         String ans = this.n.next();
 
         this.enemyColor = ans.equals("y") ? "white" : "black";
