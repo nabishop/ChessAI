@@ -72,22 +72,22 @@ public class MoveEngine {
                 }
 
                 if (piece instanceof Bishop) {
-                    moves.addAll(getAllBishopMoves(board, piece, i, j, color));
+                    moves.addAll(getAllBishopMoves(board, piece, i, j));
                 }
                 if (piece instanceof King) {
-                    moves.addAll(getAllKingMoves(board, piece, i, j, color));
+                    moves.addAll(getAllKingMoves(board, piece, i, j));
                 }
                 if (piece instanceof Knight) {
-                    moves.addAll(getAllKnightMoves(board, piece, i, j, color));
+                    moves.addAll(getAllKnightMoves(board, piece, i, j));
                 }
                 if (piece instanceof Pawn) {
                     moves.addAll(getAllPawnMoves(board, piece, i, j, color));
                 }
                 if (piece instanceof Queen) {
-                    moves.addAll(getAllQueenMoves(board, piece, i, j, color));
+                    moves.addAll(getAllQueenMoves(board, piece, i, j));
                 }
                 if (piece instanceof Rook) {
-                    moves.addAll(getAllRookMoves(board, piece, i, j, color));
+                    moves.addAll(getAllRookMoves(board, piece, i, j));
                 }
             }
         }
@@ -96,32 +96,32 @@ public class MoveEngine {
         return moves;
     }
 
-    private List<MovePossibility> getAllBishopMoves(Piece[][] board, Piece piece, int startI, int startJ, String color) {
-        return getDiagMoves(board, piece, startI, startJ, color);
+    private List<MovePossibility> getAllBishopMoves(Piece[][] board, Piece piece, int startI, int startJ) {
+        return getDiagMoves(board, piece, startI, startJ);
     }
 
-    private List<MovePossibility> getAllKingMoves(Piece[][] board, Piece piece, int startI, int startJ, String color) {
+    private List<MovePossibility> getAllKingMoves(Piece[][] board, Piece piece, int startI, int startJ) {
         return Stream.of(
                 // up
-                evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ, color),
+                evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ),
                 // up right
-                evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ + 1, color),
+                evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ + 1),
                 // up left
-                evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ - 1, color),
+                evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ - 1),
                 // left
-                evaluateAddMove(board, piece, startI, startJ, startI, startJ - 1, color),
+                evaluateAddMove(board, piece, startI, startJ, startI, startJ - 1),
                 // right
-                evaluateAddMove(board, piece, startI, startJ, startI, startJ + 1, color),
+                evaluateAddMove(board, piece, startI, startJ, startI, startJ + 1),
                 // down
-                evaluateAddMove(board, piece, startI, startJ, startI - 1, startJ, color),
+                evaluateAddMove(board, piece, startI, startJ, startI - 1, startJ),
                 // down right
-                evaluateAddMove(board, piece, startI, startJ, startI - 1, startJ + 1, color),
+                evaluateAddMove(board, piece, startI, startJ, startI - 1, startJ + 1),
                 // down left
-                evaluateAddMove(board, piece, startI, startJ, startI - 1, startJ - 1, color)
+                evaluateAddMove(board, piece, startI, startJ, startI - 1, startJ - 1)
         ).collect(Collectors.toList());
     }
 
-    private List<MovePossibility> getAllKnightMoves(Piece[][] board, Piece piece, int startI, int startJ, String color) {
+    private List<MovePossibility> getAllKnightMoves(Piece[][] board, Piece piece, int startI, int startJ) {
         // up 2 right 1
         // up 2 left 1
         // down 2 right 1
@@ -132,14 +132,14 @@ public class MoveEngine {
         // left 2 down 1
 
         return Stream.of(
-                evaluateAddMove(board, piece, startI, startJ, startI + 2, startJ + 1, color),
-                evaluateAddMove(board, piece, startI, startJ, startI + 2, startJ - 1, color),
-                evaluateAddMove(board, piece, startI, startJ, startI - 2, startJ + 1, color),
-                evaluateAddMove(board, piece, startI, startJ, startI - 2, startJ - 1, color),
-                evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ + 2, color),
-                evaluateAddMove(board, piece, startI, startJ, startI - 1, startJ + 2, color),
-                evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ - 2, color),
-                evaluateAddMove(board, piece, startI, startJ, startI - 1, startJ - 2, color)
+                evaluateAddMove(board, piece, startI, startJ, startI + 2, startJ + 1),
+                evaluateAddMove(board, piece, startI, startJ, startI + 2, startJ - 1),
+                evaluateAddMove(board, piece, startI, startJ, startI - 2, startJ + 1),
+                evaluateAddMove(board, piece, startI, startJ, startI - 2, startJ - 1),
+                evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ + 2),
+                evaluateAddMove(board, piece, startI, startJ, startI - 1, startJ + 2),
+                evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ - 2),
+                evaluateAddMove(board, piece, startI, startJ, startI - 1, startJ - 2)
         ).collect(Collectors.toList());
     }
 
@@ -152,42 +152,42 @@ public class MoveEngine {
 
         // up 2 if not moved
         if (!pawn.isMoved() && (twoMove < board.length && twoMove >= 0) && board[oneMove][startJ] == null && board[twoMove][startJ] == null) {
-            moves.add(evaluateAddMove(board, piece, startI, startJ, twoMove, startJ, color));
+            moves.add(evaluateAddMove(board, piece, startI, startJ, twoMove, startJ));
         }
         // up 1 if moved
         boolean oneMoveInBound = oneMove < board.length && oneMove >= 0;
         if (oneMoveInBound && board[startI][startJ] == null) {
-            moves.add(evaluateAddMove(board, piece, startI, startJ, oneMove, startJ, color));
+            moves.add(evaluateAddMove(board, piece, startI, startJ, oneMove, startJ));
         }
         // diag right if opposing piece
         if (oneMoveInBound && startJ + 1 < board.length && board[oneMove][startJ + 1] != null) {
-            moves.add(evaluateAddMove(board, piece, startI, startJ, oneMove, startJ + 1, color));
+            moves.add(evaluateAddMove(board, piece, startI, startJ, oneMove, startJ + 1));
         }
         // diag left if opposing piece
         if (oneMoveInBound && startJ - 1 > 0 && board[oneMove][startJ - 1] != null) {
-            moves.add(evaluateAddMove(board, piece, startI, startJ, oneMove, startJ - 1, color));
+            moves.add(evaluateAddMove(board, piece, startI, startJ, oneMove, startJ - 1));
         }
 
         return moves;
     }
 
-    private List<MovePossibility> getAllQueenMoves(Piece[][] board, Piece piece, int startI, int startJ, String color) {
-        List<MovePossibility> allStraight = getStraightMoves(board, piece, startI, startJ, color);
-        List<MovePossibility> allDiag = getDiagMoves(board, piece, startI, startJ, color);
+    private List<MovePossibility> getAllQueenMoves(Piece[][] board, Piece piece, int startI, int startJ) {
+        List<MovePossibility> allStraight = getStraightMoves(board, piece, startI, startJ);
+        List<MovePossibility> allDiag = getDiagMoves(board, piece, startI, startJ);
         return Stream.concat(allStraight.stream(), allDiag.stream())
                 .collect(Collectors.toList());
     }
 
-    private List<MovePossibility> getAllRookMoves(Piece[][] board, Piece piece, int startI, int startJ, String color) {
-        return getStraightMoves(board, piece, startI, startJ, color);
+    private List<MovePossibility> getAllRookMoves(Piece[][] board, Piece piece, int startI, int startJ) {
+        return getStraightMoves(board, piece, startI, startJ);
     }
 
-    private List<MovePossibility> getDiagMoves(Piece[][] board, Piece piece, int startI, int startJ, String color) {
+    private List<MovePossibility> getDiagMoves(Piece[][] board, Piece piece, int startI, int startJ) {
         List<MovePossibility> moves = new ArrayList<>();
 
         // up right
         for (int i = startI + 1, j = startJ + 1; i < board.length && j < board.length; i++, j++) {
-            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j, color);
+            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j);
             moves.add(move);
             if (move == null || move.getMove().getMoveValue() > 0) {
                 break;
@@ -195,7 +195,7 @@ public class MoveEngine {
         }
         // up left
         for (int i = startI + 1, j = startJ - 1; i < board.length && j >= 0; i++, j--) {
-            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j, color);
+            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j);
             moves.add(move);
             if (move == null || move.getMove().getMoveValue() > 0) {
                 break;
@@ -203,7 +203,7 @@ public class MoveEngine {
         }
         // bottom right
         for (int i = startI - 1, j = startJ + 1; i >= 0 && j < board.length; i--, j++) {
-            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j, color);
+            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j);
             moves.add(move);
             if (move == null || move.getMove().getMoveValue() > 0) {
                 break;
@@ -211,7 +211,7 @@ public class MoveEngine {
         }
         // bottom left
         for (int i = startI - 1, j = startJ - 1; i >= 0 && j >= 0; i--, j--) {
-            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j, color);
+            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j);
             moves.add(move);
             if (move == null || move.getMove().getMoveValue() > 0) {
                 break;
@@ -221,12 +221,12 @@ public class MoveEngine {
         return moves;
     }
 
-    private List<MovePossibility> getStraightMoves(Piece[][] board, Piece piece, int startI, int startJ, String color) {
+    private List<MovePossibility> getStraightMoves(Piece[][] board, Piece piece, int startI, int startJ) {
         List<MovePossibility> moves = new ArrayList<>();
 
         // up
         for (int i = startI + 1; i < board.length; i++) {
-            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, startJ, color);
+            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, startJ);
             moves.add(move);
             if (move == null || move.getMove().getMoveValue() > 0) {
                 break;
@@ -234,7 +234,7 @@ public class MoveEngine {
         }
         // down
         for (int i = startI - 1; i >= 0; i--) {
-            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, startJ, color);
+            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, startJ);
             moves.add(move);
             if (move == null || move.getMove().getMoveValue() > 0) {
                 break;
@@ -242,7 +242,7 @@ public class MoveEngine {
         }
         // right
         for (int j = startJ + 1; j < board.length; j++) {
-            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, startI, j, color);
+            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, startI, j);
             moves.add(move);
             if (move == null || move.getMove().getMoveValue() > 0) {
                 break;
@@ -250,7 +250,7 @@ public class MoveEngine {
         }
         // left
         for (int j = startJ - 1; j >= 0; j--) {
-            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, startI, j, color);
+            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, startI, j);
             moves.add(move);
             if (move == null || move.getMove().getMoveValue() > 0) {
                 break;
@@ -260,7 +260,7 @@ public class MoveEngine {
         return moves;
     }
 
-    private MovePossibility evaluateAddMove(Piece[][] board, Piece piece, int startI, int startJ, int i, int j, String color) {
+    private MovePossibility evaluateAddMove(Piece[][] board, Piece piece, int startI, int startJ, int i, int j) {
         if (i < 0 || j < 0 || i >= board.length || j >= board.length) {
             return null;
         }
