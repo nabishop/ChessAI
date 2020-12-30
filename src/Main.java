@@ -18,6 +18,7 @@ public class Main {
             System.out.println(whiteTurn == enemyWhite ? "YOU" : "COMPUTER");
             if (whiteTurn != enemyWhite) {
                 Move move = moveEngine.getNextBestMove();
+                System.out.println("COMPUTER MOVED FROM: " + move.getFromI()+","+move.getFromJ()+" TO: " + move.getToI()+","+move.getToJ());
                 board.makeMove(move, true);
             }
             else {
