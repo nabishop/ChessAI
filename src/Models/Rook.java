@@ -2,7 +2,7 @@ package Models;
 
 public class Rook extends Piece {
     public Rook(String color){
-        super(color, 5);
+        super(color, 50);
     }
 
     @Override

@@ -2,7 +2,7 @@ package Models;
 
 public class Knight extends Piece{
     public Knight(String color){
-        super(color, 3);
+        super(color, 30);
     }
 
     @Override

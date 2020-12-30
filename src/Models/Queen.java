@@ -2,7 +2,7 @@ package Models;
 
 public class Queen extends Piece{
     public Queen(String color) {
-        super(color, 10);
+        super(color, 250);
     }
 
     @Override

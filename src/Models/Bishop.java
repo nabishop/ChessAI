@@ -2,7 +2,7 @@ package Models;
 
 public class Bishop extends Piece {
     public Bishop(String color){
-        super(color, 4);
+        super(color, 40);
     }
 
     @Override

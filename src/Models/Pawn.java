@@ -3,7 +3,7 @@ package Models;
 public class Pawn extends Piece{
     private boolean moved = false;
     public Pawn(String color){
-        super(color, 1);
+        super(color, 10);
     }
 
     @Override

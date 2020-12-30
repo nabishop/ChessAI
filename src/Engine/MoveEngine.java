@@ -20,7 +20,7 @@ public class MoveEngine {
     }
 
     public Move getNextBestMove() {
-        int depth = 6;
+        int depth = 4;
 
         MovePossibility nextMove = getNextBestMoveRecurse(this.aiColor, depth, boardObj);
         return nextMove.getMove();
@@ -52,7 +52,7 @@ public class MoveEngine {
             for (MovePossibility minPos : getAllPossibleMoves(color, recurseBoard)) {
                 MovePossibility  maxPos = getNextBestMoveRecurse(this.aiColor, depth - 1, minPos.getBoard());
                 //System.out.println("MIN: " + min_value + " AI SCORE: " + maxPos.getAiScore() + " OTHER SCORE: " + maxPos.getOtherScore());
-                int value = maxPos.getOtherScore() - maxPos.getAiScore();
+                int value = maxPos.getAiScore() - maxPos.getOtherScore();
                 if (value < min_value) {
                     min_value = value;
                     minMovePos = minPos;
@@ -148,22 +148,26 @@ public class MoveEngine {
     private List<MovePossibility> getAllPawnMoves(Piece[][] board, Piece piece, int startI, int startJ, String color) {
         List<MovePossibility> moves = new ArrayList<>();
         Pawn pawn = (Pawn) piece;
+        int moveDirection = color.equals("white") ? -1 : 1;
+        int twoMove = startI + (2 * moveDirection);
+        int oneMove = startI + (moveDirection);
 
         // up 2 if not moved
-        if (!pawn.isMoved() && startI + 2 < board.length && board[startI + 1][startJ] != null) {
-            moves.add(evaluateAddMove(board, piece, startI, startJ, startI + 2, startJ, color));
+        if (!pawn.isMoved() && (twoMove < board.length && twoMove >= 0) && board[oneMove][startJ] == null && board[twoMove][startJ] == null) {
+            moves.add(evaluateAddMove(board, piece, startI, startJ, twoMove, startJ, color));
         }
         // up 1 if moved
-        if (startI + 1 < board.length && board[startI + 1][startJ] != null) {
-            moves.add(evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ, color));
+        boolean oneMoveInBound = oneMove < board.length && oneMove >= 0;
+        if (oneMoveInBound && board[startI][startJ] == null) {
+            moves.add(evaluateAddMove(board, piece, startI, startJ, oneMove, startJ, color));
         }
         // diag right if opposing piece
-        if (startI + 1 < board.length && startJ + 1 < board.length && board[startI + 1][startJ + 1] != null) {
-            moves.add(evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ + 1, color));
+        if (oneMoveInBound && startJ + 1 < board.length && board[oneMove][startJ + 1] != null) {
+            moves.add(evaluateAddMove(board, piece, startI, startJ, oneMove, startJ + 1, color));
         }
         // diag left if opposing piece
-        if (startI + 1 < board.length && startJ - 1 > 0 && board[startI + 1][startJ - 1] != null) {
-            moves.add(evaluateAddMove(board, piece, startI, startJ, startI + 1, startJ - 1, color));
+        if (oneMoveInBound && startJ - 1 > 0 && board[oneMove][startJ - 1] != null) {
+            moves.add(evaluateAddMove(board, piece, startI, startJ, oneMove, startJ - 1, color));
         }
 
         return moves;
@@ -278,7 +282,7 @@ public class MoveEngine {
         }
 
         Board boardAfterMove = new Board(copyBoard(board));
-        boardAfterMove.makeMove(newMove);
+        boardAfterMove.makeMove(newMove, false);
 
         return new MovePossibility(newMove, aiColor, otherColor, boardAfterMove);
     }

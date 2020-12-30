@@ -1,28 +1,26 @@
 package Models;
 
+import Engine.BoardHeatMap;
+
 public class MovePossibility {
     private final Move move;
-    private final String ai;
     private final int aiScore;
-    private final String other;
     private final int otherScore;
     private final Board board;
 
     public MovePossibility(Move move, String ai, String other, Board board) {
         this.move = move;
-        this.ai = ai;
-        this.other = other;
         this.board = board;
-        this.aiScore = calculatePlayerScore(ai);
+        this.aiScore =  calculatePlayerScore(ai);
         this.otherScore = calculatePlayerScore(other);
-    }
-
-    public int getAiScore() {
-        return aiScore;
     }
 
     public int getOtherScore() {
         return otherScore;
+    }
+
+    public int getAiScore() {
+        return aiScore;
     }
 
     public Board getBoard() {
@@ -36,11 +34,12 @@ public class MovePossibility {
     private int calculatePlayerScore(String color) {
         int score = 0;
 
-        for (Piece[] pieces : board.getBoard()) {
-            for (int j = 0; j < board.getBoard().length; j++) {
-                Piece piece = pieces[j];
+        Piece[][] pieces = board.getBoard();
+        for (int i = 0; i < pieces.length; i++) {
+            for (int j = 0; j < pieces.length; j++) {
+                Piece piece = pieces[i][j];
                 if (piece != null && piece.getColor().equals(color)) {
-                    score += piece.getValue();
+                    score += piece.getValue() + BoardHeatMap.centerHeatMap[i][j] + BoardHeatMap.getKingHeatMapValue(pieces, this.move, color);
                 }
             }
         }

@@ -62,6 +62,12 @@ public class Board {
     @Override
     public String toString() {
         StringBuilder boardStr = new StringBuilder();
+        boardStr.append("  ");
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            boardStr.append(String.format("%2s", Character.toString('A' + i)));
+        }
+        boardStr.append("\n");
+
         for (int i = 0; i < BOARD_SIZE; i++) {
             boardStr.append(BOARD_SIZE - i).append(" ");
             for (int j = 0; j < BOARD_SIZE; j++) {
@@ -74,7 +80,7 @@ public class Board {
                     boardStr.append(String.format("%2s", "X"));
                 }
             }
-            boardStr.append("\n");
+            boardStr.append(" ").append(BOARD_SIZE - i).append("\n");
         }
         boardStr.append("  ");
         for (int i = 0; i < BOARD_SIZE; i++) {
@@ -132,6 +138,7 @@ public class Board {
         }
         else if (movePiece instanceof Pawn) {
             Pawn pawn = (Pawn) movePiece;
+            System.out.println(pawn.isMoved());
             // more than 1 diag
             if (iDiff > 1 && jDiff > 1) {
                 return -1;
@@ -209,8 +216,8 @@ public class Board {
         return true;
     }
 
-    public void makeMove(Move move) {
-        if (board[move.getFromI()][move.getFromJ()] instanceof Pawn) {
+    public void makeMove(Move move, boolean real) {
+        if (real && board[move.getFromI()][move.getFromJ()] instanceof Pawn) {
             ((Pawn) board[move.getFromI()][move.getFromJ()]).setMoved(true);
         }
         board[move.getToI()][move.getToJ()] = board[move.getFromI()][move.getFromJ()];
