@@ -1,5 +1,6 @@
 package Models;
-import Engine.MoveEngine;
+
+import java.util.Arrays;
 
 public class Board {
     private static final int BOARD_SIZE = 8;
@@ -17,6 +18,14 @@ public class Board {
 
     public Piece[][] getBoard() {
         return board;
+    }
+
+    public boolean isBlackCheck() {
+        return blackCheck;
+    }
+
+    public boolean isWhiteCheck() {
+        return whiteCheck;
     }
 
     private Piece[][] createBoard() {
@@ -75,12 +84,11 @@ public class Board {
 
                 if (piece != null) {
                     boardStr.append(String.format("%2s", piece.toString()));
-                }
-                else {
+                } else {
                     boardStr.append(String.format("%2s", "X"));
                 }
             }
-            boardStr.append(" ").append(BOARD_SIZE - i).append("\n");
+            boardStr.append("  ").append(BOARD_SIZE - i).append("\n");
         }
         boardStr.append("  ");
         for (int i = 0; i < BOARD_SIZE; i++) {
@@ -91,8 +99,24 @@ public class Board {
         return boardStr.toString();
     }
 
-    public boolean isCheckmate() {
-        return false;
+    public boolean canGameContinue() {
+        boolean blackKing = false;
+        boolean whiteKing = false;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                Piece piece = this.board[i][j];
+                if (piece instanceof King) {
+                    if (piece.getColor().equals("white")) {
+                        whiteKing = true;
+                    }
+                    else {
+                        blackKing = true;
+                    }
+                }
+            }
+        }
+
+        return blackKing && whiteKing;
     }
 
     public boolean canMakeMove(Move move) {
@@ -104,8 +128,8 @@ public class Board {
         if (movePiece == null) {
             return -1;
         }
-        System.out.println("fromI: " + move.getFromI() + " fromJ: " +move.getFromJ());
-        System.out.println("toI: " + move.getToI() + " toJ: " +move.getToJ());
+        System.out.println("fromI: " + move.getFromI() + " fromJ: " + move.getFromJ());
+        System.out.println("toI: " + move.getToI() + " toJ: " + move.getToJ());
 
         Piece toPiece = board[move.getToI()][move.getToJ()];
         // check if the piece is being moved to a spot of the same color
@@ -116,7 +140,7 @@ public class Board {
 
         int iDiff = Math.abs(move.getFromI() - move.getToI());
         int jDiff = Math.abs(move.getFromJ() - move.getToJ());
-        System.out.println("iDiff: " + iDiff + " jDiff: " +jDiff);
+        System.out.println("iDiff: " + iDiff + " jDiff: " + jDiff);
 
         // makes sure piece moved
         if (iDiff + jDiff == 0) {
@@ -129,14 +153,19 @@ public class Board {
                 return -1;
             }
             return canMoveDiag(iDiff, move) ? toPieceValue : -1;
-        }
-        else if (movePiece instanceof King) {
+        } else if (movePiece instanceof King) {
+            // diag
+            if (iDiff == 1 && jDiff == 1) {
+                if (toPiece == null) {
+                    return toPieceValue;
+                } else {
+                    return toPiece.getColor().equals(movePiece.getColor()) ? -1 : toPieceValue;
+                }
+            }
             return iDiff + jDiff == 1 ? toPieceValue : -1;
-        }
-        else if (movePiece instanceof Knight) {
+        } else if (movePiece instanceof Knight) {
             return (iDiff == 2 && jDiff == 1) || (iDiff == 1 && jDiff == 2) ? toPieceValue : -1;
-        }
-        else if (movePiece instanceof Pawn) {
+        } else if (movePiece instanceof Pawn) {
             Pawn pawn = (Pawn) movePiece;
             System.out.println(pawn.isMoved());
             // more than 1 diag
@@ -148,8 +177,7 @@ public class Board {
                 return -1;
             }
             return toPieceValue;
-        }
-        else if (movePiece instanceof Queen) {
+        } else if (movePiece instanceof Queen) {
             if ((iDiff == 0 && jDiff != 0) || (iDiff != 0 && jDiff == 0)) {
                 return canMoveStraight(iDiff, jDiff, move) ? toPieceValue : -1;
             }
@@ -157,8 +185,7 @@ public class Board {
                 return canMoveDiag(iDiff, move) ? toPieceValue : -1;
             }
             return -1;
-        }
-        else if (movePiece instanceof Rook) {
+        } else if (movePiece instanceof Rook) {
             if (iDiff != 0 && jDiff != 0) {
                 return -1;
             }
@@ -176,16 +203,22 @@ public class Board {
 
         int nextI = move.getFromI();
         int nextJ = move.getFromJ();
+        Piece startPiece = board[move.getFromI()][move.getFromJ()];
+
         for (int x = 0; x < iDiff + jDiff; x++) {
             if (moveI) {
                 nextI = iAdd ? nextI + 1 : nextI - 1;
-            }
-            else {
+            } else {
                 nextJ = jAdd ? nextJ + 1 : nextJ - 1;
             }
             Piece piece = board[nextI][nextJ];
-            if (piece != null) {
+            if (piece != null && piece.getColor().equals(startPiece.getColor())) {
                 return false;
+            }
+            if (piece != null && !piece.getColor().equals(startPiece.getColor())) {
+                if (x + 1 < iDiff + jDiff) {
+                    return false;
+                }
             }
         }
 
@@ -220,7 +253,27 @@ public class Board {
         if (real && board[move.getFromI()][move.getFromJ()] instanceof Pawn) {
             ((Pawn) board[move.getFromI()][move.getFromJ()]).setMoved(true);
         }
+        if (board[move.getToI()][move.getToJ()] != null && board[move.getToI()][move.getToJ()].getValue() == 1000) {
+            if (board[move.getToI()][move.getToJ()].getColor().equals("white")) {
+                this.whiteCheck = true;
+            } else {
+                this.blackCheck = true;
+            }
+        }
         board[move.getToI()][move.getToJ()] = board[move.getFromI()][move.getFromJ()];
         board[move.getFromI()][move.getFromJ()] = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Board board1 = (Board) o;
+        return Arrays.equals(board, board1.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(board);
     }
 }

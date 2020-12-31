@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class UX {
     private String enemyColor;
-    private Scanner n;
+    private final Scanner n;
 
     public UX() {
         this.n = new Scanner(System.in);

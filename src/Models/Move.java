@@ -65,4 +65,15 @@ public class Move implements Comparable<Move>{
     public int compareTo(Move o) {
         return this.moveValue.compareTo(o.moveValue);
     }
+
+    @Override
+    public String toString() {
+        String fI = Integer.toString(8 - this.fromI);
+        String fJ = Character.toString('A' + this.fromJ);
+
+        String tI = Integer.toString(8 - this.toI);
+        String tJ = Character.toString('A' + this.toJ);
+
+        return "Move: FROM: " + fJ + "," + fI + " - TO: " + tJ + "," + tI;
+    }
 }
