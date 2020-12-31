@@ -2,24 +2,26 @@ package Models;
 
 import Engine.BoardHeatMap;
 
+import java.util.Map;
+
 public class MovePossibility {
     private final Move move;
-    private final int score;
-    private final String aiColor;
+    private final double score;
     private final Board board;
+    private final String color;
 
-    public MovePossibility(Move move, String aiColor, Board board) {
+    public MovePossibility(Move move, String aiColor, Board board, Map<Integer, Double> boardMap) {
         this.move = move;
         this.board = board;
-        this.aiColor = aiColor;
-        this.score = calculatePlayerScore(aiColor);
+        this.color = aiColor;
+        this.score = calculatePlayerScore(aiColor, boardMap);
     }
 
-    public String getAiColor() {
-        return aiColor;
+    public String getColor() {
+        return color;
     }
 
-    public int getScore() {
+    public double getScore() {
         return this.score;
     }
 
@@ -31,8 +33,8 @@ public class MovePossibility {
         return move;
     }
 
-    private int calculatePlayerScore(String color) {
-        int score = 0;
+    private double calculatePlayerScore(String color, Map<Integer, Double> boardMap) {
+        double score = 0;
 
         Piece[][] pieces = board.getBoard();
         for (int i = 0; i < pieces.length; i++) {
@@ -43,6 +45,7 @@ public class MovePossibility {
                 }
             }
         }
-        return score;
+        double boardScore = boardMap.getOrDefault(this.board.hashCode(), 0.0);
+        return score + boardScore;
     }
 }

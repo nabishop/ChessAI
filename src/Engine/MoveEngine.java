@@ -5,16 +5,19 @@ import Models.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MoveEngine {
     private final Board boardObj;
     private final String aiColor;
+    private final Map<Integer, Double> boardMap;
 
-    public MoveEngine(Board boardObj, String aiColor) {
+    public MoveEngine(Board boardObj, String aiColor, Map<Integer, Double> boardMap) {
         this.boardObj = boardObj;
         this.aiColor = aiColor;
+        this.boardMap = boardMap;
     }
 
     public String getAiColor() {
@@ -23,24 +26,24 @@ public class MoveEngine {
 
     public MovePossibility getNextBestMove(String color) {
         int depth = 4;
-        return getNextBestMoveRecurse(color, true, depth, boardObj, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        return getNextBestMoveRecurse(color, true, depth, boardObj, -Double.MAX_VALUE, Double.MAX_VALUE);
     }
 
-    private MovePossibility getNextBestMoveRecurse(String color, boolean max, int depth, Board recurseBoard, int alpha, int beta) {
+    private MovePossibility getNextBestMoveRecurse(String color, boolean max, int depth, Board recurseBoard, double alpha, double beta) {
         if (depth == 0) {
-            return new MovePossibility(null, this.aiColor, recurseBoard);
+            return new MovePossibility(null, this.aiColor, recurseBoard, this.boardMap);
         }
         List<MovePossibility> allPossibleMoves = getAllPossibleMoves(color, recurseBoard);
         Collections.shuffle(allPossibleMoves);
 
-        MovePossibility bestMove = new MovePossibility(null, this.aiColor, recurseBoard);
-        int bestValue = max ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        MovePossibility bestMove = new MovePossibility(null, this.aiColor, recurseBoard, this.boardMap);
+        double bestValue = max ? -Double.MAX_VALUE : Double.MAX_VALUE;
         String otherColor = color.equals("white") ? "black" : "white";
 
         for (MovePossibility move : allPossibleMoves) {
             MovePossibility possibleMove = getNextBestMoveRecurse(otherColor, !max, depth - 1, move.getBoard(), alpha, beta);
 
-            int value = possibleMove.getScore();
+            double value = possibleMove.getScore();
             if (max) {
                 if (value >= bestValue) {
                     bestValue = value;
@@ -287,7 +290,7 @@ public class MoveEngine {
         Board boardAfterMove = new Board(copyBoard(board));
         boardAfterMove.makeMove(newMove, false);
 
-        return new MovePossibility(newMove, this.aiColor, boardAfterMove);
+        return new MovePossibility(newMove, this.aiColor, boardAfterMove, this.boardMap);
     }
 
     private Piece[][] copyBoard(Piece[][] old) {
