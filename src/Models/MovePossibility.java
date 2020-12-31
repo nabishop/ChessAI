@@ -10,7 +10,7 @@ public class MovePossibility {
     private final Board board;
     private final String color;
 
-    public MovePossibility(Move move, String aiColor, Board board, Map<Integer, Double> boardMap) {
+    public MovePossibility(Move move, String aiColor, Board board, Map<String, Double> boardMap) {
         this.move = move;
         this.board = board;
         this.color = aiColor;
@@ -33,7 +33,7 @@ public class MovePossibility {
         return move;
     }
 
-    private double calculatePlayerScore(String color, Map<Integer, Double> boardMap) {
+    private double calculatePlayerScore(String color, Map<String, Double> boardMap) {
         double score = 0;
 
         Piece[][] pieces = board.getBoard();
@@ -45,7 +45,7 @@ public class MovePossibility {
                 }
             }
         }
-        double boardScore = boardMap.getOrDefault(this.board.hashCode(), 0.0);
+        double boardScore = boardMap.getOrDefault(this.board.getIdentity(), 0.0);
         return score + boardScore;
     }
 }

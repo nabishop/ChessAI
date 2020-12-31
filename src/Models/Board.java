@@ -272,8 +272,18 @@ public class Board {
         return Arrays.equals(board, board1.board);
     }
 
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(board);
+    public String getIdentity() {
+        StringBuilder code = new StringBuilder();
+        for (Piece[] pieces : board) {
+            for (int j = 0; j < board.length; j++) {
+                Piece p = pieces[j];
+                if (p == null) {
+                    code.append("0");
+                } else {
+                    code.append(p.getValue());
+                }
+            }
+        }
+        return code.toString();
     }
 }

@@ -19,9 +19,9 @@ public class Main {
         //UX ux = new UX();
 
         Queue<MovePossibility> moveHistory = new LinkedList<>();
-        Map<Integer, Double> boardMap = loadBoardMap();
+        Map<String, Double> boardMap = loadBoardMap();
 
-        int runTimes = 10;
+        int runTimes = 100;
         int longestGame = 0;
         for (int run = 0; run < runTimes; run++) {
             Board board = new Board();
@@ -40,8 +40,8 @@ public class Main {
 
                 if (moveHistory.size() >= 6) {
                     MovePossibility oldMove = moveHistory.poll();
-                    int oldHash = oldMove.hashCode();
-                    double boardScore = boardMap.getOrDefault(oldHash, INITIAL_MAP_SCORE);
+                    String oldIdentity = oldMove.getBoard().getIdentity();
+                    double boardScore = boardMap.getOrDefault(oldIdentity, INITIAL_MAP_SCORE);
 
                     // if this move was good for me
                     if (oldMove.getScore() <= newMove.getScore()) {
@@ -50,7 +50,7 @@ public class Main {
                         boardScore -= MAP_SCORE_INCREMENT;
                     }
                     System.out.println("BOARD SCORE: " + boardScore + " COLOR: " + oldMove.getColor());
-                    boardMap.put(oldHash, boardScore);
+                    boardMap.put(oldIdentity, boardScore);
                 }
 
                 moveHistory.add(newMove);
@@ -65,8 +65,8 @@ public class Main {
 
             MovePossibility remainingMove = moveHistory.poll();
             while (remainingMove != null) {
-                int oldHash = remainingMove.hashCode();
-                double boardScore = boardMap.getOrDefault(oldHash, INITIAL_MAP_SCORE);
+                String oldIdentity = remainingMove.getBoard().getIdentity();
+                double boardScore = boardMap.getOrDefault(oldIdentity, INITIAL_MAP_SCORE);
 
                 // if this move was good for me
                 if (remainingMove.getColor().equals(winner)) {
@@ -74,7 +74,7 @@ public class Main {
                 } else {
                     boardScore -= MAP_SCORE_WINNER;
                 }
-                boardMap.put(oldHash, boardScore);
+                boardMap.put(oldIdentity, boardScore);
 
                 remainingMove = moveHistory.poll();
             }
@@ -88,23 +88,23 @@ public class Main {
         saveBoardMap(boardMap);
     }
 
-    private static Map<Integer, Double> loadBoardMap() throws IOException {
-        Map<Integer, Double> boardMap = new HashMap<>();
+    private static Map<String, Double> loadBoardMap() throws IOException {
+        Map<String, Double> boardMap = new HashMap<>();
         Properties properties = new Properties();
         properties.load(new FileInputStream(MAP_FILE_PATH));
 
         for (String key : properties.stringPropertyNames()) {
-            boardMap.put(Integer.valueOf(key), Double.valueOf(properties.get(key).toString()));
+            boardMap.put(key, Double.valueOf(properties.get(key).toString()));
         }
 
         return boardMap;
     }
 
-    private static void saveBoardMap(Map<Integer, Double> boardMap) throws IOException {
+    private static void saveBoardMap(Map<String, Double> boardMap) throws IOException {
         Properties properties = new Properties();
 
-        for (Map.Entry<Integer, Double> entry : boardMap.entrySet()) {
-            properties.put(Integer.toString(entry.getKey()), Double.toString(entry.getValue()));
+        for (Map.Entry<String, Double> entry : boardMap.entrySet()) {
+            properties.put(entry.getKey(), Double.toString(entry.getValue()));
         }
 
         properties.store(new FileOutputStream(MAP_FILE_PATH), null);

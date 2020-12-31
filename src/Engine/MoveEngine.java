@@ -12,9 +12,9 @@ import java.util.stream.Stream;
 public class MoveEngine {
     private final Board boardObj;
     private final String aiColor;
-    private final Map<Integer, Double> boardMap;
+    private final Map<String, Double> boardMap;
 
-    public MoveEngine(Board boardObj, String aiColor, Map<Integer, Double> boardMap) {
+    public MoveEngine(Board boardObj, String aiColor, Map<String, Double> boardMap) {
         this.boardObj = boardObj;
         this.aiColor = aiColor;
         this.boardMap = boardMap;
