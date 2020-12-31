@@ -14,7 +14,7 @@ public class MovePossibility {
         this.move = move;
         this.board = board;
         this.color = aiColor;
-        this.score = calculatePlayerScore(aiColor, boardMap);
+        this.score = calculatePlayerScore(boardMap);
     }
 
     public String getColor() {
@@ -33,7 +33,7 @@ public class MovePossibility {
         return move;
     }
 
-    private double calculatePlayerScore(String color, Map<String, Double> boardMap) {
+    private double calculatePlayerScore(Map<String, Double> boardMap) {
         double score = 0;
 
         Piece[][] pieces = board.getBoard();
@@ -41,11 +41,10 @@ public class MovePossibility {
             for (int j = 0; j < pieces.length; j++) {
                 Piece piece = pieces[i][j];
                 if (piece != null) {
-                    score += (((piece.getValue() * 3) + BoardHeatMap.centerHeatMap[i][j] + BoardHeatMap.getKingHeatMapValue(pieces, move, color)) * (piece.getColor().equals(color) ? 1 : -1));
+                    score += ((piece.getValue() + BoardHeatMap.centerHeatMap[i][j] + BoardHeatMap.getKingHeatMapValue(pieces, move, color)) * (piece.getColor().equals(color) ? 1 : -1));
                 }
             }
         }
-        double boardScore = boardMap.getOrDefault(this.board.getIdentity(), 0.0);
-        return score + boardScore;
+        return score + boardMap.getOrDefault(this.board.getIdentity(), 0.0);
     }
 }

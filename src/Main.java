@@ -4,7 +4,6 @@ import Models.Move;
 import Models.MovePossibility;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
@@ -12,18 +11,53 @@ import java.util.*;
 public class Main {
     private static final String MAP_FILE_PATH = "/Users/nbishop/Documents/Chess/board.properties";
     private static final double INITIAL_MAP_SCORE = 0;
-    private static final double MAP_SCORE_INCREMENT = 1;
-    private static final double MAP_SCORE_WINNER = 5;
+    private static final double MAP_SCORE_INCREMENT = 1.75;
+    private static final double MAP_SCORE_WINNER = 12.5;
 
     public static void main(String[] args) throws IOException {
-        //UX ux = new UX();
+        train();
+    }
 
+    private static void fight() throws IOException {
+        UX ux = new UX();
+        Map<String, Double> boardMap = loadBoardMap();
+
+        Board board = new Board();
+        MoveEngine engine = new MoveEngine(board, ux.getAiColor(), boardMap);
+
+        boolean whiteTurn = true;
+        System.out.println(board.toString());
+        while (board.canGameContinue()) {
+            if ((whiteTurn && ux.getAiColor().equals("white")) || (!whiteTurn && ux.getAiColor().equals("black"))) {
+                MovePossibility newMove = engine.getNextBestMove();
+                board.makeMove(newMove.getMove(), true);
+                System.out.println("COMPUTER MOVED: " + newMove.getMove().toString());
+            } else {
+                while (true) {
+                    Move move = ux.getNextMove(whiteTurn);
+
+                    if (board.canMakeMove(move)) {
+                        board.makeMove(move, true);
+                        System.out.println("PLAYER MOVED: " + move.toString());
+                        break;
+                    }
+                }
+            }
+
+
+            System.out.println(board.toString() + "\n");
+            whiteTurn = !whiteTurn;
+        }
+    }
+
+    private static void train() throws IOException {
         Queue<MovePossibility> moveHistory = new LinkedList<>();
         Map<String, Double> boardMap = loadBoardMap();
 
-        int runTimes = 100;
+        int runTimes = 5000;
         int longestGame = 0;
         for (int run = 0; run < runTimes; run++) {
+            System.out.println("Running #" + run + "...");
             Board board = new Board();
             MoveEngine blackMoveEngine = new MoveEngine(board, "black", boardMap);
             MoveEngine whiteMoveEngine = new MoveEngine(board, "white", boardMap);
@@ -32,10 +66,9 @@ public class Main {
             String winner = "";
             int moves = 0;
             while (board.canGameContinue()) {
-                System.out.println(whiteTurn ? "WHITE" : "BLACK");
                 winner = whiteTurn ? "white" : "black";
 
-                MovePossibility newMove = whiteTurn ? whiteMoveEngine.getNextBestMove("white") : blackMoveEngine.getNextBestMove("black");
+                MovePossibility newMove = whiteTurn ? whiteMoveEngine.getNextBestMove() : blackMoveEngine.getNextBestMove();
                 board.makeMove(newMove.getMove(), true);
 
                 if (moveHistory.size() >= 6) {
@@ -49,18 +82,15 @@ public class Main {
                     } else {
                         boardScore -= MAP_SCORE_INCREMENT;
                     }
-                    System.out.println("BOARD SCORE: " + boardScore + " COLOR: " + oldMove.getColor());
                     boardMap.put(oldIdentity, boardScore);
                 }
+                //System.out.println(winner + " " + moves);
+                //System.out.println(newMove.getMove().toString());
+                //System.out.println(board.toString() + "\n");
 
                 moveHistory.add(newMove);
                 whiteTurn = !whiteTurn;
                 moves++;
-
-                System.out.println(moves + " - " + newMove.getMove().toString());
-                System.out.println(board.toString());
-
-                System.out.println();
             }
 
             MovePossibility remainingMove = moveHistory.poll();
@@ -82,9 +112,11 @@ public class Main {
             if (moves > longestGame) {
                 longestGame = moves;
             }
+
+            System.out.println("Run #" + (run + 1) + " - Moves: " + moves + "\n");
         }
 
-        System.out.println("longest game was " +  longestGame + " moves");
+        System.out.println("longest game was " + longestGame + " moves");
         saveBoardMap(boardMap);
     }
 

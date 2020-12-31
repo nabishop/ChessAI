@@ -3,6 +3,7 @@ import Models.Move;
 import java.util.Scanner;
 
 public class UX {
+    private String aiColor;
     private String enemyColor;
     private final Scanner n;
 
@@ -15,7 +16,12 @@ public class UX {
         System.out.println("Is the enemy white?");
         String ans = this.n.next();
 
+        this.aiColor = ans.equals("y") ? "black" : "white";
         this.enemyColor = ans.equals("y") ? "white" : "black";
+    }
+
+    public String getAiColor() {
+        return aiColor;
     }
 
     public String getEnemyColor() {

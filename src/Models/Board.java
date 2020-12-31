@@ -7,6 +7,7 @@ public class Board {
     private final Piece[][] board;
     private boolean whiteCheck = false;
     private boolean blackCheck = false;
+    private String lastMove = "";
 
     public Board() {
         this.board = createBoard();
@@ -260,6 +261,7 @@ public class Board {
                 this.blackCheck = true;
             }
         }
+        this.lastMove = board[move.getFromI()][move.getFromJ()].getColor();
         board[move.getToI()][move.getToJ()] = board[move.getFromI()][move.getFromJ()];
         board[move.getFromI()][move.getFromJ()] = null;
     }
@@ -274,6 +276,7 @@ public class Board {
 
     public String getIdentity() {
         StringBuilder code = new StringBuilder();
+        code.append(lastMove);
         for (Piece[] pieces : board) {
             for (int j = 0; j < board.length; j++) {
                 Piece p = pieces[j];

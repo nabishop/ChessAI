@@ -20,13 +20,9 @@ public class MoveEngine {
         this.boardMap = boardMap;
     }
 
-    public String getAiColor() {
-        return aiColor;
-    }
-
-    public MovePossibility getNextBestMove(String color) {
+    public MovePossibility getNextBestMove() {
         int depth = 4;
-        return getNextBestMoveRecurse(color, true, depth, boardObj, -Double.MAX_VALUE, Double.MAX_VALUE);
+        return getNextBestMoveRecurse(this.aiColor, true, depth, boardObj, -Double.MAX_VALUE, Double.MAX_VALUE);
     }
 
     private MovePossibility getNextBestMoveRecurse(String color, boolean max, int depth, Board recurseBoard, double alpha, double beta) {
@@ -45,7 +41,7 @@ public class MoveEngine {
 
             double value = possibleMove.getScore();
             if (max) {
-                if (value >= bestValue) {
+                if (value > bestValue) {
                     bestValue = value;
                     bestMove = move;
                 }
@@ -53,7 +49,7 @@ public class MoveEngine {
             }
             // minimize other
             else {
-                if (value <= bestValue) {
+                if (value < bestValue) {
                     bestValue = value;
                     bestMove = move;
                 }
