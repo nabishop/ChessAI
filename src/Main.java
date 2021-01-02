@@ -16,7 +16,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         train();
-        // fight();
+        //fight();
     }
 
     private static void fight() throws IOException {
@@ -56,7 +56,7 @@ public class Main {
         Map<String, Double> boardMap = loadBoardMap();
         System.out.println(boardMap.size());
 
-        int runTimes = 1;
+        int runTimes = 25000;
         int longestGame = 0;
         double averageMoves = 0;
         for (int run = 0; run < runTimes; run++) {
@@ -72,6 +72,12 @@ public class Main {
                 winner = whiteTurn ? "white" : "black";
 
                 MovePossibility newMove = whiteTurn ? whiteMoveEngine.getNextBestMove() : blackMoveEngine.getNextBestMove();
+
+                // checkmate, cannot make a move
+                if (newMove == null) {
+                    winner = whiteTurn ? "black" : "white";
+                    break;
+                }
                 board.makeMove(newMove.getMove(), true);
 
                 if (moveHistory.size() >= 6) {
@@ -87,7 +93,7 @@ public class Main {
                     }
                     boardMap.put(oldIdentity, boardScore);
                 }
-                System.out.println(winner + " " + moves);
+                System.out.println(winner + " " + (moves + 1));
                 System.out.println(newMove.getMove().toString());
                 System.out.println(board.toString() + "\n");
 
@@ -117,13 +123,13 @@ public class Main {
             }
             averageMoves += moves;
 
-            System.out.println("Run #" + (run + 1) + " - Moves: " + (moves - 1) + "\n");
-            System.out.println("average game so far is " + (averageMoves / (double) (run + 1)) + " moves");
+            System.out.println("Run #" + (run + 1) + " - Moves: " + moves);
+            System.out.println("average game so far is " + (averageMoves / (double) (run + 1)) + " moves\n");
+            saveBoardMap(boardMap);
         }
 
         System.out.println("longest game was " + longestGame + " moves");
         System.out.println("average game was " + (averageMoves / (double) runTimes) + " moves");
-        saveBoardMap(boardMap);
     }
 
     private static Map<String, Double> loadBoardMap() throws IOException {

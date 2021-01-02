@@ -9,6 +9,7 @@ public class MovePossibility {
     private final double score;
     private final Board board;
     private final String aiColor;
+    private boolean validMove = true;
 
     public MovePossibility(Move move, String aiColor, String movingColor, Board board, Map<String, Double> boardMap) {
         this.move = move;
@@ -33,10 +34,12 @@ public class MovePossibility {
         return move;
     }
 
+    public boolean isValidMove() {
+        return validMove;
+    }
+
     private double calculatePlayerScore(Map<String, Double> boardMap, String movingColor) {
         double score = 0;
-        int movingKingI = 0;
-        int movingKingJ = 0;
 
         Piece[][] pieces = board.getBoard();
         for (int i = 0; i < pieces.length; i++) {
@@ -44,9 +47,12 @@ public class MovePossibility {
                 Piece piece = pieces[i][j];
                 if (piece != null) {
                     score += ((piece.getValue() + BoardHeatMap.centerHeatMap[i][j] + BoardHeatMap.getKingHeatMapValue(pieces, this.move, movingColor)) * (piece.getColor().equals(aiColor) ? 1 : -1));
-                    if (piece.getColor().equals(movingColor) && piece instanceof King) {
-                        movingKingI = i;
-                        movingKingJ = j;
+
+                    // cannot move a piece if it is puts the king in check
+                    if (piece instanceof King && piece.getColor().equals(movingColor)) {
+                        if (this.board.canPieceBeTaken(i, j, movingColor)) {
+                            this.validMove = false;
+                        }
                     }
                 }
             }
@@ -54,21 +60,16 @@ public class MovePossibility {
         if (move != null) {
             int moveI = move.getToI();
             int moveJ = move.getToJ();
-            boolean isKingMoving = pieces[moveI][moveJ] instanceof King;
+            Piece movingPiece = pieces[moveI][moveJ];
 
-            boolean canMovedPieceBeTaken = this.board.canPieceBeTaken(moveI, moveJ, isKingMoving, movingColor);
+            boolean canMovedPieceBeTaken = this.board.canPieceBeTaken(moveI, moveJ, movingColor);
             if (canMovedPieceBeTaken) {
-                //System.out.println(movingColor + " " + true);
-                //System.out.println("before: " + score + " after " + (pieces[move.getToI()][move.getToJ()].getValue() * (aiColor.equals(movingColor) ? -1 : 1)));
-                score += (pieces[move.getToI()][move.getToJ()].getValue() * (aiColor.equals(movingColor) ? -1 : 1));
+                score += (movingPiece.getValue() * (aiColor.equals(movingColor) ? -1 : 0));
             }
-            // if king can be taken, dont want to double count
-            if (!isKingMoving && this.board.canPieceBeTaken(movingKingI, movingKingJ, true, movingColor)) {
-                score += (1000 * (aiColor.equals(movingColor) ? -1 : 1));
-            }
+
         }
 
-        //double mlScore = boardMap.getOrDefault(this.board.getIdentity(), 0.0);
-        return score;
+        double mlScore = boardMap.getOrDefault(this.board.getIdentity(), 0.0);
+        return score + mlScore;
     }
 }

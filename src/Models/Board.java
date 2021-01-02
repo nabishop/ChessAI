@@ -275,28 +275,17 @@ public class Board {
         if (real && board[move.getFromI()][move.getFromJ()] instanceof Pawn) {
             ((Pawn) board[move.getFromI()][move.getFromJ()]).setMoved(true);
         }
-        if (board[move.getToI()][move.getToJ()] != null && board[move.getToI()][move.getToJ()].getValue() == 1000) {
-            if (board[move.getToI()][move.getToJ()].getColor().equals("white")) {
-                this.whiteCheck = true;
-            } else {
-                this.blackCheck = true;
-            }
-        }
         this.lastMove = board[move.getFromI()][move.getFromJ()].getColor();
         board[move.getToI()][move.getToJ()] = board[move.getFromI()][move.getFromJ()];
         board[move.getFromI()][move.getFromJ()] = null;
     }
 
-    public boolean canPieceBeTaken(int pieceI, int pieceJ, boolean isPieceKing, String movedColor) {
+    public boolean canPieceBeTaken(int pieceI, int pieceJ, String movedColor) {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
                 Piece piece = board[i][j];
                 if (piece != null && !piece.getColor().equals(movedColor)) {
                     if (this.canMakeMove(new Move(i, j, pieceI, pieceJ, -1))) {
-                        // king can claim this piece back
-                        if (isPieceKing && Math.abs(i - pieceI) == 1 || Math.abs(j - pieceJ) == 1) {
-                            continue;
-                        }
                         return true;
                     }
                 }
