@@ -11,11 +11,12 @@ import java.util.*;
 public class Main {
     private static final String MAP_FILE_PATH = "/Users/nbishop/Documents/Chess/board.properties";
     private static final double INITIAL_MAP_SCORE = 0;
-    private static final double MAP_SCORE_INCREMENT = 1.75;
-    private static final double MAP_SCORE_WINNER = 12.5;
+    private static final double MAP_SCORE_INCREMENT = 1.5;
+    private static final double MAP_SCORE_WINNER = 15;
 
     public static void main(String[] args) throws IOException {
         train();
+        // fight();
     }
 
     private static void fight() throws IOException {
@@ -53,11 +54,13 @@ public class Main {
     private static void train() throws IOException {
         Queue<MovePossibility> moveHistory = new LinkedList<>();
         Map<String, Double> boardMap = loadBoardMap();
+        System.out.println(boardMap.size());
 
-        int runTimes = 5000;
+        int runTimes = 1;
         int longestGame = 0;
+        double averageMoves = 0;
         for (int run = 0; run < runTimes; run++) {
-            System.out.println("Running #" + run + "...");
+            System.out.println("Running #" + (run + 1) + "... (" + (runTimes - run) + " left)");
             Board board = new Board();
             MoveEngine blackMoveEngine = new MoveEngine(board, "black", boardMap);
             MoveEngine whiteMoveEngine = new MoveEngine(board, "white", boardMap);
@@ -84,9 +87,9 @@ public class Main {
                     }
                     boardMap.put(oldIdentity, boardScore);
                 }
-                //System.out.println(winner + " " + moves);
-                //System.out.println(newMove.getMove().toString());
-                //System.out.println(board.toString() + "\n");
+                System.out.println(winner + " " + moves);
+                System.out.println(newMove.getMove().toString());
+                System.out.println(board.toString() + "\n");
 
                 moveHistory.add(newMove);
                 whiteTurn = !whiteTurn;
@@ -99,7 +102,7 @@ public class Main {
                 double boardScore = boardMap.getOrDefault(oldIdentity, INITIAL_MAP_SCORE);
 
                 // if this move was good for me
-                if (remainingMove.getColor().equals(winner)) {
+                if (remainingMove.getAiColor().equals(winner)) {
                     boardScore += MAP_SCORE_WINNER;
                 } else {
                     boardScore -= MAP_SCORE_WINNER;
@@ -112,11 +115,14 @@ public class Main {
             if (moves > longestGame) {
                 longestGame = moves;
             }
+            averageMoves += moves;
 
-            System.out.println("Run #" + (run + 1) + " - Moves: " + moves + "\n");
+            System.out.println("Run #" + (run + 1) + " - Moves: " + (moves - 1) + "\n");
+            System.out.println("average game so far is " + (averageMoves / (double) (run + 1)) + " moves");
         }
 
         System.out.println("longest game was " + longestGame + " moves");
+        System.out.println("average game was " + (averageMoves / (double) runTimes) + " moves");
         saveBoardMap(boardMap);
     }
 

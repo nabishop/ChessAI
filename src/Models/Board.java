@@ -129,8 +129,8 @@ public class Board {
         if (movePiece == null) {
             return -1;
         }
-        System.out.println("fromI: " + move.getFromI() + " fromJ: " + move.getFromJ());
-        System.out.println("toI: " + move.getToI() + " toJ: " + move.getToJ());
+        //System.out.println("fromI: " + move.getFromI() + " fromJ: " + move.getFromJ());
+        //System.out.println("toI: " + move.getToI() + " toJ: " + move.getToJ());
 
         Piece toPiece = board[move.getToI()][move.getToJ()];
         // check if the piece is being moved to a spot of the same color
@@ -141,7 +141,7 @@ public class Board {
 
         int iDiff = Math.abs(move.getFromI() - move.getToI());
         int jDiff = Math.abs(move.getFromJ() - move.getToJ());
-        System.out.println("iDiff: " + iDiff + " jDiff: " + jDiff);
+        //System.out.println("iDiff: " + iDiff + " jDiff: " + jDiff);
 
         // makes sure piece moved
         if (iDiff + jDiff == 0) {
@@ -168,15 +168,36 @@ public class Board {
             return (iDiff == 2 && jDiff == 1) || (iDiff == 1 && jDiff == 2) ? toPieceValue : -1;
         } else if (movePiece instanceof Pawn) {
             Pawn pawn = (Pawn) movePiece;
-            System.out.println(pawn.isMoved());
-            // more than 1 diag
-            if (iDiff > 1 && jDiff > 1) {
+            // more than 1 double jump
+            if (pawn.isMoved() && iDiff > 1) {
                 return -1;
             }
 
-            if ((iDiff > 2) || (pawn.isMoved() && iDiff > 1) || (jDiff == 0 && toPiece != null) || (jDiff > 0 && toPiece == null)) {
+            // cannot go up two and also over 1
+            if (!pawn.isMoved() && iDiff == 2 && jDiff > 0) {
                 return -1;
             }
+
+            // cannot go up 3+ or side 2+
+            if (iDiff > 2 || jDiff > 1) {
+                return -1;
+            }
+
+            // cannot go straight if there is a piece there
+            if (jDiff == 0 && toPiece != null) {
+                return -1;
+            }
+
+            // cannot go sideways if there is no piece there
+            if ((jDiff > 0 && toPiece == null)) {
+                return -1;
+            }
+
+            // piece blocking
+            if (jDiff == 0 && !canMoveStraight(iDiff, jDiff, move)) {
+                return -1;
+            }
+
             return toPieceValue;
         } else if (movePiece instanceof Queen) {
             if ((iDiff == 0 && jDiff != 0) || (iDiff != 0 && jDiff == 0)) {
@@ -266,6 +287,25 @@ public class Board {
         board[move.getFromI()][move.getFromJ()] = null;
     }
 
+    public boolean canPieceBeTaken(int pieceI, int pieceJ, boolean isPieceKing, String movedColor) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                Piece piece = board[i][j];
+                if (piece != null && !piece.getColor().equals(movedColor)) {
+                    if (this.canMakeMove(new Move(i, j, pieceI, pieceJ, -1))) {
+                        // king can claim this piece back
+                        if (isPieceKing && Math.abs(i - pieceI) == 1 || Math.abs(j - pieceJ) == 1) {
+                            continue;
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -283,7 +323,7 @@ public class Board {
                 if (p == null) {
                     code.append("0");
                 } else {
-                    code.append(p.getValue());
+                    code.append(p.getPieceIdentiy());
                 }
             }
         }

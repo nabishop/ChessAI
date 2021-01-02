@@ -7,6 +7,11 @@ public class Pawn extends Piece{
     }
 
     @Override
+    String getPieceIdentiy() {
+        return super.getColor() + "pn";
+    }
+
+    @Override
     public String toString() {
         return super.getColor().equals("black") ? "\u2659" : "\u265F";
     }

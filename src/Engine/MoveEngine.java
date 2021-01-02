@@ -2,10 +2,7 @@ package Engine;
 
 import Models.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,38 +19,53 @@ public class MoveEngine {
 
     public MovePossibility getNextBestMove() {
         int depth = 4;
-        return getNextBestMoveRecurse(this.aiColor, true, depth, boardObj, -Double.MAX_VALUE, Double.MAX_VALUE);
+        List<MovePossibility> allPossibleMoves = getAllPossibleMoves(this.aiColor, this.boardObj);
+        Collections.shuffle(allPossibleMoves);
+
+        double bestMoveValue = -Double.MAX_VALUE;
+        MovePossibility bestMoveFound = null;
+
+        for (MovePossibility movePossibility : allPossibleMoves) {
+            MovePossibility move = minimaxAB(this.aiColor, false, depth, movePossibility.getBoard(), -Double.MAX_VALUE, Double.MAX_VALUE);
+            double value = move.getScore();
+            if (value > bestMoveValue) {
+                bestMoveValue = value;
+                bestMoveFound = movePossibility;
+            }
+        }
+
+        return bestMoveFound;
     }
 
-    private MovePossibility getNextBestMoveRecurse(String color, boolean max, int depth, Board recurseBoard, double alpha, double beta) {
+    private MovePossibility minimaxAB(String color, boolean max, int depth, Board recurseBoard, double alpha, double beta) {
         if (depth == 0) {
-            return new MovePossibility(null, this.aiColor, recurseBoard, this.boardMap);
+            return new MovePossibility(null, this.aiColor, color, recurseBoard, this.boardMap);
         }
         List<MovePossibility> allPossibleMoves = getAllPossibleMoves(color, recurseBoard);
         Collections.shuffle(allPossibleMoves);
 
-        MovePossibility bestMove = new MovePossibility(null, this.aiColor, recurseBoard, this.boardMap);
+        MovePossibility bestMove = null;
         double bestValue = max ? -Double.MAX_VALUE : Double.MAX_VALUE;
         String otherColor = color.equals("white") ? "black" : "white";
 
         for (MovePossibility move : allPossibleMoves) {
-            MovePossibility possibleMove = getNextBestMoveRecurse(otherColor, !max, depth - 1, move.getBoard(), alpha, beta);
+            MovePossibility possibleMove = minimaxAB(otherColor, !max, depth - 1, move.getBoard(), alpha, beta);
 
             double value = possibleMove.getScore();
             if (max) {
                 if (value > bestValue) {
                     bestValue = value;
-                    bestMove = move;
+                    bestMove = possibleMove;
                 }
-                alpha = Math.max(alpha, bestValue);
+                alpha = Math.max(alpha, value);
             }
             // minimize other
             else {
                 if (value < bestValue) {
                     bestValue = value;
-                    bestMove = move;
+                    bestMove = possibleMove;
                 }
-                beta = Math.min(bestValue, beta);
+                beta = Math.min(value, beta);
             }
 
             // AB Pruning
@@ -160,7 +172,7 @@ public class MoveEngine {
         }
         // up 1 if moved
         boolean oneMoveInBound = oneMove < board.length && oneMove >= 0;
-        if (oneMoveInBound && board[startI][startJ] == null) {
+        if (oneMoveInBound && board[oneMove][startJ] == null) {
             moves.add(evaluateAddMove(board, piece, startI, startJ, oneMove, startJ, color));
         }
         // diag right if opposing piece
@@ -284,9 +296,42 @@ public class MoveEngine {
         }
 
         Board boardAfterMove = new Board(copyBoard(board));
+        // see if this piece can be taken by moving here, subtract score if it can be
         boardAfterMove.makeMove(newMove, false);
+        MovePossibility movePossibility = new MovePossibility(newMove, this.aiColor, color, boardAfterMove, this.boardMap);
+        //System.out.println("BEFORE\n"+temp(board)+"AFTER\n"+boardAfterMove.toString()+"SCORE: " + movePossibility.getScore());
 
-        return new MovePossibility(newMove, this.aiColor, boardAfterMove, this.boardMap);
+        return movePossibility;
+    }
+
+    private String temp(Piece[][] board) {
+        StringBuilder boardStr = new StringBuilder();
+        boardStr.append("  ");
+        for (int i = 0; i < 8; i++) {
+            boardStr.append(String.format("%2s", Character.toString('A' + i)));
+        }
+        boardStr.append("\n");
+
+        for (int i = 0; i < 8; i++) {
+            boardStr.append(8 - i).append(" ");
+            for (int j = 0; j < 8; j++) {
+                Piece piece = board[i][j];
+
+                if (piece != null) {
+                    boardStr.append(String.format("%2s", piece.toString()));
+                } else {
+                    boardStr.append(String.format("%2s", "X"));
+                }
+            }
+            boardStr.append("  ").append(8 - i).append("\n");
+        }
+        boardStr.append("  ");
+        for (int i = 0; i < 8; i++) {
+            boardStr.append(String.format("%2s", Character.toString('A' + i)));
+        }
+        boardStr.append("\n");
+
+        return boardStr.toString();
     }
 
     private Piece[][] copyBoard(Piece[][] old) {

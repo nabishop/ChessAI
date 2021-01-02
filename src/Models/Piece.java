@@ -17,6 +17,8 @@ public abstract class Piece implements Comparable<Piece> {
         return color;
     }
 
+    abstract String getPieceIdentiy();
+
     @Override
     public int compareTo(Piece other) {
         return this.value.compareTo(other.value);

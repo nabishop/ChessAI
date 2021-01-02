@@ -2,7 +2,12 @@ package Models;
 
 public class Bishop extends Piece {
     public Bishop(String color){
-        super(color, 40);
+        super(color, 30);
+    }
+
+    @Override
+    String getPieceIdentiy() {
+        return super.getColor() + "bp";
     }
 
     @Override

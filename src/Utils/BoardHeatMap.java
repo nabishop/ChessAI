@@ -1,4 +1,4 @@
-package Engine;
+package Utils;
 
 import Models.King;
 import Models.Move;
