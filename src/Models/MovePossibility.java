@@ -66,7 +66,6 @@ public class MovePossibility {
             if (canMovedPieceBeTaken) {
                 score += (movingPiece.getValue() * (aiColor.equals(movingColor) ? -1 : 0));
             }
-
         }
 
         double mlScore = boardMap.getOrDefault(this.board.getIdentity(), 0.0);

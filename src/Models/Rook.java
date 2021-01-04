@@ -1,8 +1,18 @@
 package Models;
 
 public class Rook extends Piece {
+    private boolean moved = false;
+
     public Rook(String color){
         super(color, 50);
+    }
+
+    public void setMoved(boolean moved) {
+        this.moved = moved;
+    }
+
+    public boolean isMoved() {
+        return moved;
     }
 
     @Override

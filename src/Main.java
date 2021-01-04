@@ -2,6 +2,7 @@ import Engine.MoveEngine;
 import Models.Board;
 import Models.Move;
 import Models.MovePossibility;
+import Utils.Scoring;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,13 +11,10 @@ import java.util.*;
 
 public class Main {
     private static final String MAP_FILE_PATH = "/Users/nbishop/Documents/Chess/board.properties";
-    private static final double INITIAL_MAP_SCORE = 0;
-    private static final double MAP_SCORE_INCREMENT = 1.5;
-    private static final double MAP_SCORE_WINNER = 15;
 
     public static void main(String[] args) throws IOException {
         train();
-        //fight();
+        // fight();
     }
 
     private static void fight() throws IOException {
@@ -35,7 +33,10 @@ public class Main {
                 System.out.println("COMPUTER MOVED: " + newMove.getMove().toString());
             } else {
                 while (true) {
-                    Move move = ux.getNextMove(whiteTurn);
+                    Move move = null;
+                    while (move == null) {
+                        move = ux.getNextMove(whiteTurn);
+                    }
 
                     if (board.canMakeMove(move)) {
                         board.makeMove(move, true);
@@ -51,10 +52,14 @@ public class Main {
         }
     }
 
+    private static boolean castleMove(Move move) {
+        return true;
+    }
+
     private static void train() throws IOException {
         Queue<MovePossibility> moveHistory = new LinkedList<>();
         Map<String, Double> boardMap = loadBoardMap();
-        System.out.println(boardMap.size());
+        System.out.println("Loaded " + boardMap.size() + " Game States...\n");
 
         int runTimes = 25000;
         int longestGame = 0;
@@ -83,19 +88,19 @@ public class Main {
                 if (moveHistory.size() >= 6) {
                     MovePossibility oldMove = moveHistory.poll();
                     String oldIdentity = oldMove.getBoard().getIdentity();
-                    double boardScore = boardMap.getOrDefault(oldIdentity, INITIAL_MAP_SCORE);
+                    double boardScore = boardMap.getOrDefault(oldIdentity, Scoring.ML_INITIAL_MAP_SCORE);
 
                     // if this move was good for me
                     if (oldMove.getScore() <= newMove.getScore()) {
-                        boardScore += MAP_SCORE_INCREMENT;
+                        boardScore += Scoring.ML_MAP_SCORE_INCREMENT;
                     } else {
-                        boardScore -= MAP_SCORE_INCREMENT;
+                        boardScore -= Scoring.ML_MAP_SCORE_INCREMENT;
                     }
                     boardMap.put(oldIdentity, boardScore);
                 }
-                System.out.println(winner + " " + (moves + 1));
-                System.out.println(newMove.getMove().toString());
-                System.out.println(board.toString() + "\n");
+                //System.out.println(winner + " " + (moves + 1));
+                //System.out.println(newMove.getMove().toString());
+                //System.out.println(board.toString() + "\n");
 
                 moveHistory.add(newMove);
                 whiteTurn = !whiteTurn;
@@ -105,13 +110,13 @@ public class Main {
             MovePossibility remainingMove = moveHistory.poll();
             while (remainingMove != null) {
                 String oldIdentity = remainingMove.getBoard().getIdentity();
-                double boardScore = boardMap.getOrDefault(oldIdentity, INITIAL_MAP_SCORE);
+                double boardScore = boardMap.getOrDefault(oldIdentity, Scoring.ML_INITIAL_MAP_SCORE);
 
                 // if this move was good for me
                 if (remainingMove.getAiColor().equals(winner)) {
-                    boardScore += MAP_SCORE_WINNER;
+                    boardScore += Scoring.ML_MAP_SCORE_WINNER;
                 } else {
-                    boardScore -= MAP_SCORE_WINNER;
+                    boardScore -= Scoring.ML_MAP_SCORE_WINNER;
                 }
                 boardMap.put(oldIdentity, boardScore);
 

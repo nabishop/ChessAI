@@ -24,7 +24,6 @@ public class MoveEngine {
 
         double bestMoveValue = -Double.MAX_VALUE;
         MovePossibility bestMoveFound = null;
-        MovePossibility end = null;
         String otherColor = this.aiColor.equals("white") ? "black" : "white";
 
         for (MovePossibility movePossibility : allPossibleMoves) {
@@ -33,11 +32,9 @@ public class MoveEngine {
             if (value > bestMoveValue) {
                 bestMoveValue = value;
                 bestMoveFound = movePossibility;
-                end = move;
             }
         }
 
-        //System.out.println(end.getBoard()+"\n"+end.getScore()+" " + bestMoveValue);
         return bestMoveFound;
     }
 
@@ -301,7 +298,7 @@ public class MoveEngine {
             return null;
         }
 
-        Board boardAfterMove = new Board(copyBoard(board));
+        Board boardAfterMove = new Board(copyBoard(board), this.boardObj.isWhiteMoved());
         // see if this piece can be taken by moving here, subtract score if it can be
         boardAfterMove.makeMove(newMove, false);
         MovePossibility movePossibility = new MovePossibility(newMove, this.aiColor, color, boardAfterMove, this.boardMap);

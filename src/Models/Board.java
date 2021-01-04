@@ -1,32 +1,30 @@
 package Models;
 
+import Utils.Scoring;
+
 import java.util.Arrays;
 
 public class Board {
     private static final int BOARD_SIZE = 8;
     private final Piece[][] board;
-    private boolean whiteCheck = false;
-    private boolean blackCheck = false;
-    private String lastMove = "";
+    private String colorLastMove = "";
+    private boolean whiteMoved = false;
 
     public Board() {
         this.board = createBoard();
     }
 
-    public Board(Piece[][] board) {
+    public Board(Piece[][] board, boolean whiteMoved) {
+        this.whiteMoved = whiteMoved;
         this.board = board;
+    }
+
+    public boolean isWhiteMoved() {
+        return whiteMoved;
     }
 
     public Piece[][] getBoard() {
         return board;
-    }
-
-    public boolean isBlackCheck() {
-        return blackCheck;
-    }
-
-    public boolean isWhiteCheck() {
-        return whiteCheck;
     }
 
     private Piece[][] createBoard() {
@@ -275,7 +273,12 @@ public class Board {
         if (real && board[move.getFromI()][move.getFromJ()] instanceof Pawn) {
             ((Pawn) board[move.getFromI()][move.getFromJ()]).setMoved(true);
         }
-        this.lastMove = board[move.getFromI()][move.getFromJ()].getColor();
+        this.colorLastMove = board[move.getFromI()][move.getFromJ()].getColor();
+
+        if (colorLastMove.equals("white")) {
+            this.whiteMoved = true;
+        }
+
         board[move.getToI()][move.getToJ()] = board[move.getFromI()][move.getFromJ()];
         board[move.getFromI()][move.getFromJ()] = null;
     }
@@ -305,7 +308,7 @@ public class Board {
 
     public String getIdentity() {
         StringBuilder code = new StringBuilder();
-        code.append(lastMove);
+        code.append(colorLastMove);
         for (Piece[] pieces : board) {
             for (int j = 0; j < board.length; j++) {
                 Piece p = pieces[j];

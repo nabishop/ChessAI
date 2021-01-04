@@ -34,6 +34,12 @@ public class UX {
         System.out.println("To: ");
         String moveTo = this.n.next().toLowerCase();
 
+        if (moveFrom.length() != 2 || moveTo.length() != 2 ||
+                moveFrom.substring(0, 1).matches("-?\\d+") || moveTo.substring(0, 1).matches("-?\\d+") ||
+                !moveFrom.substring(1, 2).matches("-?\\d+") || !moveTo.substring(1, 2).matches("-?\\d+")) {
+            return null;
+        }
+
         return new Move(moveFrom, moveTo);
     }
 }
