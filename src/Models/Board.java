@@ -271,7 +271,13 @@ public class Board {
 
     public void makeMove(Move move, boolean real) {
         if (real && board[move.getFromI()][move.getFromJ()] instanceof Pawn) {
-            ((Pawn) board[move.getFromI()][move.getFromJ()]).setMoved(true);
+            Pawn p = (Pawn) board[move.getFromI()][move.getFromJ()];
+            p.setMoved(true);
+
+            // check if the pawn should be upgraded to a queen
+            if (move.getToI() == 0 || move.getToI() == 7) {
+                board[move.getFromI()][move.getFromJ()] = new Queen(p.getColor());
+            }
         }
         this.colorLastMove = board[move.getFromI()][move.getFromJ()].getColor();
 

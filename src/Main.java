@@ -1,7 +1,5 @@
 import Engine.MoveEngine;
-import Models.Board;
-import Models.Move;
-import Models.MovePossibility;
+import Models.*;
 import Utils.Scoring;
 
 import java.io.FileInputStream;
@@ -58,12 +56,17 @@ public class Main {
 
     private static void train() throws IOException {
         Queue<MovePossibility> moveHistory = new LinkedList<>();
+        List<Move> lastSixMoves = new ArrayList<>();
         Map<String, Double> boardMap = loadBoardMap();
         System.out.println("Loaded " + boardMap.size() + " Game States...\n");
 
         int runTimes = 25000;
         int longestGame = 0;
         double averageMoves = 0;
+        int whiteWins = 0;
+        int blackWins = 0;
+        int draws = 0;
+
         for (int run = 0; run < runTimes; run++) {
             System.out.println("Running #" + (run + 1) + "... (" + (runTimes - run) + " left)");
             Board board = new Board();
@@ -73,6 +76,7 @@ public class Main {
             boolean whiteTurn = true;
             String winner = "";
             int moves = 0;
+            boolean draw = false;
             while (board.canGameContinue()) {
                 winner = whiteTurn ? "white" : "black";
 
@@ -81,19 +85,81 @@ public class Main {
                 // checkmate, cannot make a move
                 if (newMove == null) {
                     winner = whiteTurn ? "black" : "white";
+                    System.out.println("WINNER: " + winner);
+                    if (winner.equals("white")) {
+                        whiteWins++;
+                    } else {
+                        blackWins++;
+                    }
                     break;
                 }
                 board.makeMove(newMove.getMove(), true);
 
+                // draw checking
+                lastSixMoves.add(newMove.getMove());
+                if (lastSixMoves.size() == 12) {
+                    // last
+                    if (lastSixMoves.get(0).equals(lastSixMoves.get(4)) &&
+                            lastSixMoves.get(0).equals(lastSixMoves.get(8)) &&
+                            lastSixMoves.get(1).equals(lastSixMoves.get(5)) &&
+                            lastSixMoves.get(1).equals(lastSixMoves.get(9)) &&
+                            lastSixMoves.get(2).equals(lastSixMoves.get(6)) &&
+                            lastSixMoves.get(2).equals(lastSixMoves.get(10)) &&
+                            lastSixMoves.get(3).equals(lastSixMoves.get(7)) &&
+                            lastSixMoves.get(3).equals(lastSixMoves.get(11))) {
+                        draw = true;
+                        draws++;
+                        System.out.println("DRAW BY REPETITION");
+                        break;
+                    }
+                    lastSixMoves.remove(0);
+                }
+
+                // check insufficient material (no pawns) both sides either
+                List<Piece> blackPieces = new ArrayList<>();
+                List<Piece> whitePieces = new ArrayList<>();
+                boolean canInsufficientMaterial = true;
+                Piece[][] b = board.getBoard();
+                /*
+                    A lone king
+                    a king and bishop
+                    a king and knight
+                */
+
+                for (Piece[] pb : b) {
+                    for (Piece p : pb) {
+                        if (p != null) {
+                            if (p instanceof Queen || p instanceof Rook || p instanceof Pawn) {
+                                canInsufficientMaterial = false;
+                                break;
+                            }
+
+                            if (p.getColor().equals("white")) {
+                                whitePieces.add(p);
+                            } else {
+                                blackPieces.add(p);
+                            }
+                        }
+                    }
+                }
+
+                if (canInsufficientMaterial && blackPieces.size() <= 2 && whitePieces.size() <= 2) {
+                    draw = true;
+                    draws++;
+                    System.out.println("DRAW BY INSUFFICIENT MATERIALS");
+                    break;
+                }
+
+                // ML
                 if (moveHistory.size() >= 6) {
                     MovePossibility oldMove = moveHistory.poll();
                     String oldIdentity = oldMove.getBoard().getIdentity();
-                    double boardScore = boardMap.getOrDefault(oldIdentity, Scoring.ML_INITIAL_MAP_SCORE);
 
+                    double boardScore = boardMap.getOrDefault(oldIdentity, Scoring.ML_INITIAL_MAP_SCORE);
                     // if this move was good for me
-                    if (oldMove.getScore() <= newMove.getScore()) {
+                    if (oldMove.getScore() < newMove.getScore()) {
                         boardScore += Scoring.ML_MAP_SCORE_INCREMENT;
-                    } else {
+                    } else if (oldMove.getScore() > newMove.getScore()) {
                         boardScore -= Scoring.ML_MAP_SCORE_INCREMENT;
                     }
                     boardMap.put(oldIdentity, boardScore);
@@ -112,12 +178,17 @@ public class Main {
                 String oldIdentity = remainingMove.getBoard().getIdentity();
                 double boardScore = boardMap.getOrDefault(oldIdentity, Scoring.ML_INITIAL_MAP_SCORE);
 
-                // if this move was good for me
-                if (remainingMove.getAiColor().equals(winner)) {
-                    boardScore += Scoring.ML_MAP_SCORE_WINNER;
+                if (!draw) {
+                    // if this move was good for me
+                    if (remainingMove.getAiColor().equals(winner)) {
+                        boardScore += Scoring.ML_MAP_SCORE_WINNER;
+                    } else {
+                        boardScore -= Scoring.ML_MAP_SCORE_WINNER;
+                    }
                 } else {
-                    boardScore -= Scoring.ML_MAP_SCORE_WINNER;
+                    boardScore += Scoring.ML_MAP_SCORE_DRAW;
                 }
+
                 boardMap.put(oldIdentity, boardScore);
 
                 remainingMove = moveHistory.poll();
@@ -128,6 +199,7 @@ public class Main {
             }
             averageMoves += moves;
 
+            System.out.println("White wins: " + whiteWins + "\tBlack wins: " + blackWins + "\tDraws: " + draws);
             System.out.println("Run #" + (run + 1) + " - Moves: " + moves);
             System.out.println("average game so far is " + (averageMoves / (double) (run + 1)) + " moves\n");
             saveBoardMap(boardMap);

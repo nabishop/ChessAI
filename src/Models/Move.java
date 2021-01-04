@@ -1,5 +1,7 @@
 package Models;
 
+import java.util.Objects;
+
 public class Move implements Comparable<Move>{
     private final int fromI;
     private final int fromJ;
@@ -75,5 +77,21 @@ public class Move implements Comparable<Move>{
         String tJ = Character.toString('A' + this.toJ);
 
         return "Move: FROM: " + fJ + "," + fI + " - TO: " + tJ + "," + tI;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Move move = (Move) o;
+        return fromI == move.fromI &&
+                fromJ == move.fromJ &&
+                toI == move.toI &&
+                toJ == move.toJ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fromI, fromJ, toI, toJ);
     }
 }
