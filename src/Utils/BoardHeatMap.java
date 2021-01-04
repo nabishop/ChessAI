@@ -10,7 +10,7 @@ public class BoardHeatMap {
     private static int[][] getCenterHeatMap() {
         int[][] board = new int[8][8];
 
-        for (int i = 0; i < 8; i ++) {
+        for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (i >= 2 && i <= 5 && j >= 2 && j <= 5) {
                     board[i][j] = 1;
@@ -30,7 +30,7 @@ public class BoardHeatMap {
             return 0;
         }
 
-        for (int i = 0; i < pieces.length; i ++) {
+        for (int i = 0; i < pieces.length; i++) {
             for (int j = 0; j < pieces.length; j++) {
                 Piece piece = pieces[i][j];
                 if (piece != null && !piece.getColor().equals(player) && piece instanceof King) {

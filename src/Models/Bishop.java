@@ -1,7 +1,7 @@
 package Models;
 
 public class Bishop extends Piece {
-    public Bishop(String color){
+    public Bishop(String color) {
         super(color, 30);
     }
 

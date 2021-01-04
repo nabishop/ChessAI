@@ -3,7 +3,7 @@ package Models;
 public class Rook extends Piece {
     private boolean moved = false;
 
-    public Rook(String color){
+    public Rook(String color) {
         super(color, 50);
     }
 

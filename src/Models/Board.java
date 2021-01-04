@@ -107,8 +107,7 @@ public class Board {
                 if (piece instanceof King) {
                     if (piece.getColor().equals("white")) {
                         whiteKing = true;
-                    }
-                    else {
+                    } else {
                         blackKing = true;
                     }
                 }

@@ -1,6 +1,6 @@
 package Models;
 
-public class Queen extends Piece{
+public class Queen extends Piece {
     public Queen(String color) {
         super(color, 100);
     }

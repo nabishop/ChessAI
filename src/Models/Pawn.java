@@ -1,8 +1,9 @@
 package Models;
 
-public class Pawn extends Piece{
+public class Pawn extends Piece {
     private boolean moved = false;
-    public Pawn(String color){
+
+    public Pawn(String color) {
         super(color, 10);
     }
 

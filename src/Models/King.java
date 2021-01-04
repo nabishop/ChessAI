@@ -1,9 +1,9 @@
 package Models;
 
-public class King extends Piece{
+public class King extends Piece {
     private boolean moved = false;
 
-    public King(String color){
+    public King(String color) {
         super(color, 1000);
     }
 

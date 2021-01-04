@@ -2,7 +2,7 @@ package Models;
 
 import java.util.Objects;
 
-public class Move implements Comparable<Move>{
+public class Move implements Comparable<Move> {
     private final int fromI;
     private final int fromJ;
     private final int toI;

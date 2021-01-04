@@ -1,7 +1,7 @@
 package Models;
 
-public class Knight extends Piece{
-    public Knight(String color){
+public class Knight extends Piece {
+    public Knight(String color) {
         super(color, 30);
     }
 
