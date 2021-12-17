@@ -2,13 +2,11 @@ import Engine.MoveEngine;
 import Models.*;
 import Utils.Scoring;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static final String MAP_FILE_PATH = "/Users/nbishop/Documents/Chess/board.properties";
+    private static final String MAP_FILE_PATH = "/Users/nicholasbishop/Documents/GitHub/ChessAI/board.properties";
 
     public static void main(String[] args) throws IOException {
         train();
@@ -23,7 +21,7 @@ public class Main {
         MoveEngine engine = new MoveEngine(board, ux.getAiColor(), boardMap);
 
         boolean whiteTurn = true;
-        System.out.println(board.toString());
+        System.out.println(board);
         while (board.canGameContinue()) {
             if ((whiteTurn && ux.getAiColor().equals("white")) || (!whiteTurn && ux.getAiColor().equals("black"))) {
                 MovePossibility newMove = engine.getNextBestMove();
@@ -38,14 +36,14 @@ public class Main {
 
                     if (board.canMakeMove(move)) {
                         board.makeMove(move, true);
-                        System.out.println("PLAYER MOVED: " + move.toString());
+                        System.out.println("PLAYER MOVED: " + move);
                         break;
                     }
                 }
             }
 
 
-            System.out.println(board.toString() + "\n");
+            System.out.println(board + "\n");
             whiteTurn = !whiteTurn;
         }
     }
@@ -212,7 +210,14 @@ public class Main {
     private static Map<String, Double> loadBoardMap() throws IOException {
         Map<String, Double> boardMap = new HashMap<>();
         Properties properties = new Properties();
-        properties.load(new FileInputStream(MAP_FILE_PATH));
+        try {
+            properties.load(new FileInputStream(MAP_FILE_PATH));
+        } catch (FileNotFoundException e) {
+            File boardMapFile = new File(MAP_FILE_PATH);
+            if (!boardMapFile.createNewFile()) {
+                throw new IOException("Failure to create desired board map");
+            }
+        }
 
         for (String key : properties.stringPropertyNames()) {
             boardMap.put(key, Double.valueOf(properties.get(key).toString()));
