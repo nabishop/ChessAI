@@ -9,8 +9,9 @@ public class Main {
     private static final String MAP_FILE_PATH = "/Users/nicholasbishop/Documents/GitHub/ChessAI/board.properties";
 
     public static void main(String[] args) throws IOException {
-        train();
-        // fight();
+        boolean verbose = true;
+        train(verbose);
+        //fight();
     }
 
     private static void fight() throws IOException {
@@ -25,7 +26,7 @@ public class Main {
         while (board.canGameContinue()) {
             if ((whiteTurn && ux.getAiColor().equals("white")) || (!whiteTurn && ux.getAiColor().equals("black"))) {
                 MovePossibility newMove = engine.getNextBestMove();
-                board.makeMove(newMove.getMove(), true);
+                board.makeMove(newMove.getMove());
                 System.out.println("COMPUTER MOVED: " + newMove.getMove().toString());
             } else {
                 while (true) {
@@ -35,7 +36,7 @@ public class Main {
                     }
 
                     if (board.canMakeMove(move)) {
-                        board.makeMove(move, true);
+                        board.makeMove(move);
                         System.out.println("PLAYER MOVED: " + move);
                         break;
                     }
@@ -52,7 +53,7 @@ public class Main {
         return true;
     }
 
-    private static void train() throws IOException {
+    private static void train(boolean verbose) throws IOException {
         Queue<MovePossibility> moveHistory = new LinkedList<>();
         List<Move> lastSixMoves = new ArrayList<>();
         Map<String, Double> boardMap = loadBoardMap();
@@ -91,7 +92,7 @@ public class Main {
                     }
                     break;
                 }
-                board.makeMove(newMove.getMove(), true);
+                board.makeMove(newMove.getMove());
 
                 // draw checking
                 lastSixMoves.add(newMove.getMove());
@@ -149,7 +150,7 @@ public class Main {
                 }
 
                 // ML
-                if (moveHistory.size() >= 6) {
+                if (moveHistory.size() >= 12) {
                     MovePossibility oldMove = moveHistory.poll();
                     String oldIdentity = oldMove.getBoard().getIdentity();
 
@@ -162,9 +163,12 @@ public class Main {
                     }
                     boardMap.put(oldIdentity, boardScore);
                 }
-                //System.out.println(winner + " " + (moves + 1));
-                //System.out.println(newMove.getMove().toString());
-                //System.out.println(board.toString() + "\n");
+                if (verbose) {
+                    System.out.println(winner + " " + (moves + 1));
+                    System.out.println(newMove.getMove().toString());
+                    System.out.println(winner + " score: " + newMove.getScore());
+                    System.out.println(board + "\n");
+                }
 
                 moveHistory.add(newMove);
                 whiteTurn = !whiteTurn;

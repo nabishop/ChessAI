@@ -3,6 +3,7 @@ package Models;
 import Utils.Scoring;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Board {
     private static final int BOARD_SIZE = 8;
@@ -81,11 +82,7 @@ public class Board {
             for (int j = 0; j < BOARD_SIZE; j++) {
                 Piece piece = board[i][j];
 
-                if (piece != null) {
-                    boardStr.append(String.format("%2s", piece.toString()));
-                } else {
-                    boardStr.append(String.format("%2s", "X"));
-                }
+                boardStr.append(String.format("%2s", Objects.requireNonNullElse(piece, "X")));
             }
             boardStr.append("  ").append(BOARD_SIZE - i).append("\n");
         }
@@ -195,6 +192,11 @@ public class Board {
                 return -1;
             }
 
+            // check upgrade to queen
+            if (move.getToI() == 0 || move.getToI() == 7) {
+                return new Queen("").getValue();
+            }
+
             return toPieceValue;
         } else if (movePiece instanceof Queen) {
             if ((iDiff == 0 && jDiff != 0) || (iDiff != 0 && jDiff == 0)) {
@@ -268,8 +270,8 @@ public class Board {
         return true;
     }
 
-    public void makeMove(Move move, boolean real) {
-        if (real && board[move.getFromI()][move.getFromJ()] instanceof Pawn) {
+    public void makeMove(Move move) {
+        if (board[move.getFromI()][move.getFromJ()] instanceof Pawn) {
             Pawn p = (Pawn) board[move.getFromI()][move.getFromJ()];
             p.setMoved(true);
 

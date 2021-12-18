@@ -4,7 +4,7 @@ public class Pawn extends Piece {
     private boolean moved = false;
 
     public Pawn(String color) {
-        super(color, 10);
+        super(color, ModelScores.PAWN_SCORE);
     }
 
     @Override
@@ -23,5 +23,12 @@ public class Pawn extends Piece {
 
     public void setMoved(boolean moved) {
         this.moved = moved;
+    }
+
+    @Override
+    public Piece clone() {
+        Pawn p = new Pawn(this.getColor());
+        p.setMoved(this.isMoved());
+        return p;
     }
 }

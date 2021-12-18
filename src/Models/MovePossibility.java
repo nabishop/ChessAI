@@ -46,7 +46,10 @@ public class MovePossibility {
             for (int j = 0; j < pieces.length; j++) {
                 Piece piece = pieces[i][j];
                 if (piece != null) {
-                    score += ((piece.getValue() + BoardHeatMap.centerHeatMap[i][j] + BoardHeatMap.getKingHeatMapValue(pieces, this.move, movingColor)) * (piece.getColor().equals(aiColor) ? 1 : -1));
+                    score += (
+                            (piece.getValue() + BoardHeatMap.centerHeatMap[i][j]) *
+                            (piece.getColor().equals(aiColor) ? 1 : -1)
+                    );
 
                     // cannot move a piece if it is puts the king in check
                     if (piece instanceof King && piece.getColor().equals(movingColor)) {
@@ -57,6 +60,10 @@ public class MovePossibility {
                 }
             }
         }
+
+        score += (BoardHeatMap.getKingHeatMapValue(pieces, this.move, movingColor) *
+                        (movingColor.equals(aiColor) ? 1 : -1));
+
         if (move != null) {
             int moveI = move.getToI();
             int moveJ = move.getToJ();
@@ -64,7 +71,7 @@ public class MovePossibility {
 
             boolean canMovedPieceBeTaken = this.board.canPieceBeTaken(moveI, moveJ, movingColor);
             if (canMovedPieceBeTaken) {
-                score += (movingPiece.getValue() * (aiColor.equals(movingColor) ? -1 : 0));
+                score += (movingPiece.getValue() * (aiColor.equals(movingColor) ? -1 : 1));
             }
         }
 

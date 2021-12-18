@@ -2,7 +2,7 @@ package Models;
 
 public class Queen extends Piece {
     public Queen(String color) {
-        super(color, 100);
+        super(color, ModelScores.QUEEN_SCORE);
     }
 
     @Override
@@ -13,5 +13,10 @@ public class Queen extends Piece {
     @Override
     public String toString() {
         return super.getColor().equals("black") ? "\u2655" : "\u265B";
+    }
+
+    @Override
+    public Piece clone() {
+        return new Queen(this.getColor());
     }
 }

@@ -23,4 +23,6 @@ public abstract class Piece implements Comparable<Piece> {
     public int compareTo(Piece other) {
         return this.value.compareTo(other.value);
     }
+
+    public abstract Piece clone();
 }

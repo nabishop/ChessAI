@@ -24,4 +24,9 @@ public class Rook extends Piece {
     public String toString() {
         return super.getColor().equals("black") ? "\u2656" : "\u265C";
     }
+
+    @Override
+    public Piece clone() {
+        return new Rook(this.getColor());
+    }
 }
