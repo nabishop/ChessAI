@@ -40,7 +40,7 @@ public class MoveEngine {
 
     private MovePossibility minimaxAB(String nowMoving, boolean max, int depth, Board recurseBoard, double alpha, double beta) {
         String otherColor = nowMoving.equals("white") ? "black" : "white";
-        MovePossibility noMove = new MovePossibility(null, this.aiColor, otherColor, recurseBoard, this.boardMap);
+        MovePossibility noMove = new MovePossibility(null, this.aiColor, nowMoving, recurseBoard, this.boardMap);
 
         if (depth == 0) {
             return noMove;
@@ -113,7 +113,18 @@ public class MoveEngine {
         }
 
         moves.removeAll(Collections.singleton(null));
-        return moves;
+
+        // keep track if any of the moves can check the opponents king
+        List<MovePossibility> checkKingMoves = new ArrayList<>();
+
+        for (MovePossibility mp : moves) {
+            if (mp.isOtherKingChecked()) {
+                checkKingMoves.add(mp);
+            }
+        }
+
+        // if any moves could check the opponent, only do those, assume opp will check you
+        return checkKingMoves.size() > 0 ? checkKingMoves : moves;
     }
 
     private List<MovePossibility> getAllBishopMoves(Piece[][] board, Piece piece, int startI, int startJ, String color) {

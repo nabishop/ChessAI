@@ -10,12 +10,17 @@ public class MovePossibility {
     private final Board board;
     private final String aiColor;
     private boolean validMove = true;
+    private boolean otherKingChecked = false;
 
     public MovePossibility(Move move, String aiColor, String movingColor, Board board, Map<String, Double> boardMap) {
         this.move = move;
         this.board = board;
         this.aiColor = aiColor;
         this.score = calculatePlayerScore(boardMap, movingColor);
+    }
+
+    public boolean isOtherKingChecked() {
+        return otherKingChecked;
     }
 
     public String getAiColor() {
@@ -55,6 +60,13 @@ public class MovePossibility {
                     if (piece instanceof King && piece.getColor().equals(movingColor)) {
                         if (this.board.canPieceBeTaken(i, j, movingColor)) {
                             this.validMove = false;
+                        }
+                    }
+
+                    // check if the moving player can check the other king
+                    if (piece instanceof King && !piece.getColor().equals(movingColor)) {
+                        if (this.board.canPieceBeTaken(i, j, movingColor)) {
+                            this.otherKingChecked = true;
                         }
                     }
                 }

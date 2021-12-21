@@ -7,7 +7,6 @@ public final class ModelConstants {
     public static final String BLACK_COLOR = "black";
     public static final String WHITE_COLOR = "white";
 
-
     // scores
     public static final int ROOK_SCORE = 50;
     public static final int KNIGHT_SCORE = 30;
