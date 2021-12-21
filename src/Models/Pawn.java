@@ -14,7 +14,9 @@ public class Pawn extends Piece {
 
     @Override
     public String toString() {
-        return super.getColor().equals("black") ? "\u2659" : "\u265F";
+        return super.getColor().equals(ModelConstants.BLACK_COLOR) ?
+                ModelConstants.BLACK_PAWN_ASCII :
+                ModelConstants.WHITE_PAWN_ASCII;
     }
 
     public boolean isMoved() {

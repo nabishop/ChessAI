@@ -22,7 +22,9 @@ public class Rook extends Piece {
 
     @Override
     public String toString() {
-        return super.getColor().equals("black") ? "\u2656" : "\u265C";
+        return super.getColor().equals(ModelConstants.BLACK_COLOR) ?
+                ModelConstants.BLACK_ROOK_ASCII :
+                ModelConstants.WHITE_ROOK_ASCII;
     }
 
     @Override

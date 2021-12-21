@@ -22,7 +22,9 @@ public class King extends Piece {
 
     @Override
     public String toString() {
-        return super.getColor().equals("black") ? "\u2654" : "\u265A";
+        return super.getColor().equals(ModelConstants.BLACK_COLOR) ?
+                ModelConstants.BLACK_KING_ASCII :
+                ModelConstants.WHITE_KING_ASCII;
     }
 
     @Override

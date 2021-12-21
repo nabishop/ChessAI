@@ -24,7 +24,7 @@ public class MoveEngine {
 
         double bestMoveValue = -Double.MAX_VALUE;
         MovePossibility bestMoveFound = null;
-        String otherColor = this.aiColor.equals("white") ? "black" : "white";
+        String otherColor = getOtherColor(this.aiColor);
 
         for (MovePossibility movePossibility : allPossibleMoves) {
             MovePossibility oppMove = minimaxAB(otherColor, false, depth - 1, movePossibility.getBoard(), -Double.MAX_VALUE, Double.MAX_VALUE);
@@ -39,7 +39,8 @@ public class MoveEngine {
     }
 
     private MovePossibility minimaxAB(String nowMoving, boolean max, int depth, Board recurseBoard, double alpha, double beta) {
-        String otherColor = nowMoving.equals("white") ? "black" : "white";
+
+        String otherColor = getOtherColor(nowMoving);
         MovePossibility noMove = new MovePossibility(null, this.aiColor, nowMoving, recurseBoard, this.boardMap);
 
         if (depth == 0) {
@@ -177,7 +178,7 @@ public class MoveEngine {
     private List<MovePossibility> getAllPawnMoves(Piece[][] board, Piece piece, int startI, int startJ, String color) {
         List<MovePossibility> moves = new ArrayList<>();
         Pawn pawn = (Pawn) piece;
-        int moveDirection = color.equals("white") ? -1 : 1;
+        int moveDirection = color.equals(ModelConstants.WHITE_COLOR) ? -1 : 1;
         int twoMove = startI + (2 * moveDirection);
         int oneMove = startI + (moveDirection);
 
@@ -327,5 +328,9 @@ public class MoveEngine {
             }
         }
         return n;
+    }
+
+    private String getOtherColor(String color) {
+        return color.equals(ModelConstants.WHITE_COLOR) ? ModelConstants.BLACK_COLOR : ModelConstants.WHITE_COLOR;
     }
 }

@@ -12,7 +12,9 @@ public class Queen extends Piece {
 
     @Override
     public String toString() {
-        return super.getColor().equals("black") ? "\u2655" : "\u265B";
+        return super.getColor().equals(ModelConstants.BLACK_COLOR) ?
+                ModelConstants.BLACK_QUEEN_ASCII :
+                ModelConstants.WHITE_QUEEN_ASCII;
     }
 
     @Override

@@ -12,7 +12,9 @@ public class Bishop extends Piece {
 
     @Override
     public String toString() {
-        return super.getColor().equals("black") ? "\u2657" : "\u265D";
+        return super.getColor().equals(ModelConstants.BLACK_COLOR) ?
+                ModelConstants.BLACK_BISHOP_ASCII :
+                ModelConstants.WHITE_BISHOP_ASCII;
     }
 
     @Override

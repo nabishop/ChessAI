@@ -12,7 +12,9 @@ public class Knight extends Piece {
 
     @Override
     public String toString() {
-        return super.getColor().equals("black") ? "\u2658" : "\u265E";
+        return super.getColor().equals(ModelConstants.BLACK_COLOR) ?
+                ModelConstants.BLACK_KNIGHT_ASCII :
+                ModelConstants.WHITE_KNIGHT_ASCII;
     }
 
     @Override
