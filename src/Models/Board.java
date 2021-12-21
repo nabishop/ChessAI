@@ -136,7 +136,6 @@ public class Board {
             return -1;
         }
         int toPieceValue = toPiece == null ? 0 : toPiece.getValue();
-
         int iDiff = Math.abs(move.getFromI() - move.getToI());
         int jDiff = Math.abs(move.getFromJ() - move.getToJ());
         //System.out.println("iDiff: " + iDiff + " jDiff: " + jDiff);
@@ -193,6 +192,16 @@ public class Board {
 
             // piece blocking
             if (jDiff == 0 && !canMoveStraight(iDiff, jDiff, move)) {
+                return -1;
+            }
+
+            int verticalDiff = move.getFromI() - move.getToI();
+            // black pawns cannot go up
+            if (movePiece.getColor().equals(ModelConstants.BLACK_COLOR) && verticalDiff > 0) {
+                return -1;
+            }
+            // white pawns cannot go down
+            if (movePiece.getColor().equals(ModelConstants.WHITE_COLOR) && verticalDiff < 0) {
                 return -1;
             }
 
