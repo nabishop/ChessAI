@@ -12,6 +12,24 @@ public class Main {
         boolean verbose = true;
         train(verbose);
         //fight();
+        //checkGameState();
+    }
+
+    private static void checkGameState() {
+        String game = "   A B C D E F G H\n" +
+                "8  X X X ♖ X X X ♖  8\n" +
+                "7  X X X X X X ♔ X  7\n" +
+                "6  X ♙ X X X ♘ ♙ ♙  6\n" +
+                "5  X X ♙ X ♗ ♙ X X  5\n" +
+                "4  ♙ X X X X X X X  4\n" +
+                "3  ♛ X X ♕ ♟ X X ♟  3\n" +
+                "2  ♟ ♟ X X X X ♟ X  2\n" +
+                "1  ♜ ♚ ♝ X X ♝ X ♜  1\n" +
+                "   A B C D E F G H";
+        Board b = new Board(game);
+        MoveEngine me = new MoveEngine(b, "white", new HashMap<>());
+        System.out.println(b);
+        System.out.println(me.getAllPossibleMoves("white", b));
     }
 
     private static void fight() throws IOException {

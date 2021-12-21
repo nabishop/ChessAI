@@ -216,36 +216,60 @@ public class MoveEngine {
 
     private List<MovePossibility> getDiagMoves(Piece[][] board, Piece piece, int startI, int startJ, String color) {
         List<MovePossibility> moves = new ArrayList<>();
+        boolean pieceInWay = false; // marks if we have seen a piece in this direction and cannot continue the loop
 
-        // up right
-        for (int i = startI + 1, j = startJ + 1; i < board.length && j < board.length; i++, j++) {
-            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j, color);
-            moves.add(move);
-            if (move == null || move.getMove().getMoveValue() > 0) {
-                break;
-            }
-        }
-        // up left
-        for (int i = startI + 1, j = startJ - 1; i < board.length && j >= 0; i++, j--) {
-            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j, color);
-            moves.add(move);
-            if (move == null || move.getMove().getMoveValue() > 0) {
-                break;
-            }
-        }
         // bottom right
-        for (int i = startI - 1, j = startJ + 1; i >= 0 && j < board.length; i--, j++) {
+        for (int i = startI + 1, j = startJ + 1; i < board.length && j < board.length; i++, j++) {
+            Piece p = board[i][j];
+            if (p != null) {
+                pieceInWay = true;
+            }
+
             MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j, color);
             moves.add(move);
-            if (move == null || move.getMove().getMoveValue() > 0) {
+            if (pieceInWay) {
                 break;
             }
         }
         // bottom left
-        for (int i = startI - 1, j = startJ - 1; i >= 0 && j >= 0; i--, j--) {
+        pieceInWay = false;
+        for (int i = startI + 1, j = startJ - 1; i < board.length && j >= 0; i++, j--) {
+            Piece p = board[i][j];
+            if (p != null) {
+                pieceInWay = true;
+            }
+
             MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j, color);
             moves.add(move);
-            if (move == null || move.getMove().getMoveValue() > 0) {
+            if (pieceInWay) {
+                break;
+            }
+        }
+        // top right
+        pieceInWay = false;
+        for (int i = startI - 1, j = startJ + 1; i >= 0 && j < board.length; i--, j++) {
+            Piece p = board[i][j];
+            if (p != null) {
+                pieceInWay = true;
+            }
+
+            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j, color);
+            moves.add(move);
+            if (pieceInWay) {
+                break;
+            }
+        }
+        // top left
+        pieceInWay = false;
+        for (int i = startI - 1, j = startJ - 1; i >= 0 && j >= 0; i--, j--) {
+            Piece p = board[i][j];
+            if (p != null) {
+                pieceInWay = true;
+            }
+
+            MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, j, color);
+            moves.add(move);
+            if (pieceInWay) {
                 break;
             }
         }
@@ -255,36 +279,60 @@ public class MoveEngine {
 
     private List<MovePossibility> getStraightMoves(Piece[][] board, Piece piece, int startI, int startJ, String color) {
         List<MovePossibility> moves = new ArrayList<>();
+        boolean pieceInWay = false; // marks if we have seen a piece in this direction and cannot continue the loop
 
-        // up
+        // down
         for (int i = startI + 1; i < board.length; i++) {
+            Piece p = board[i][startJ];
+            if (p != null) {
+                pieceInWay = true;
+            }
+
             MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, startJ, color);
             moves.add(move);
-            if (move == null || move.getMove().getMoveValue() > 0) {
+            if (pieceInWay) {
                 break;
             }
         }
-        // down
+        // up
+        pieceInWay = false;
         for (int i = startI - 1; i >= 0; i--) {
+            Piece p = board[i][startJ];
+            if (p != null) {
+                pieceInWay = true;
+            }
+
             MovePossibility move = evaluateAddMove(board, piece, startI, startJ, i, startJ, color);
             moves.add(move);
-            if (move == null || move.getMove().getMoveValue() > 0) {
+            if (pieceInWay) {
                 break;
             }
         }
         // right
+        pieceInWay = false;
         for (int j = startJ + 1; j < board.length; j++) {
+            Piece p = board[startI][j];
+            if (p != null) {
+                pieceInWay = true;
+            }
+
             MovePossibility move = evaluateAddMove(board, piece, startI, startJ, startI, j, color);
             moves.add(move);
-            if (move == null || move.getMove().getMoveValue() > 0) {
+            if (pieceInWay) {
                 break;
             }
         }
         // left
+        pieceInWay = false;
         for (int j = startJ - 1; j >= 0; j--) {
+            Piece p = board[startI][j];
+            if (p != null) {
+                pieceInWay = true;
+            }
+
             MovePossibility move = evaluateAddMove(board, piece, startI, startJ, startI, j, color);
             moves.add(move);
-            if (move == null || move.getMove().getMoveValue() > 0) {
+            if (pieceInWay) {
                 break;
             }
         }
