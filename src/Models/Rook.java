@@ -4,7 +4,7 @@ public class Rook extends Piece {
     private boolean moved = false;
 
     public Rook(String color) {
-        super(color, 50);
+        super(color, ModelConstants.ROOK_SCORE);
     }
 
     public void setMoved(boolean moved) {
@@ -16,7 +16,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    String getPieceIdentiy() {
+    String getPieceIdentity() {
         return super.getColor() + "rk";
     }
 

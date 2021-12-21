@@ -80,7 +80,7 @@ public class MoveEngine {
         return bestMove == null ? noMove : bestMove;
     }
 
-    private List<MovePossibility> getAllPossibleMoves(String color, Board recuseBoard) {
+    public List<MovePossibility> getAllPossibleMoves(String color, Board recuseBoard) {
         List<MovePossibility> moves = new ArrayList<>();
         Piece[][] board = recuseBoard.getBoard();
 

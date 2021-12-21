@@ -9,7 +9,7 @@ public class Main {
     private static final String MAP_FILE_PATH = "/Users/nicholasbishop/Documents/GitHub/ChessAI/board.properties";
 
     public static void main(String[] args) throws IOException {
-        boolean verbose = false;
+        boolean verbose = true;
         train(verbose);
         //fight();
     }
@@ -95,7 +95,7 @@ public class Main {
                 }
                 board.makeMove(newMove.getMove());
 
-                // draw checking
+                // draw checking, checks the last 6 moves from each player
                 lastSixMoves.add(newMove.getMove());
                 if (lastSixMoves.size() == 12) {
                     // last
@@ -115,8 +115,6 @@ public class Main {
                     }
                     lastSixMoves.remove(0);
                 }
-
-                System.out.println(lastSixMoves.size());
 
                 // check insufficient material (no pawns) both sides either
                 List<Piece> blackPieces = new ArrayList<>();

@@ -4,11 +4,11 @@ public class Pawn extends Piece {
     private boolean moved = false;
 
     public Pawn(String color) {
-        super(color, ModelScores.PAWN_SCORE);
+        super(color, ModelConstants.PAWN_SCORE);
     }
 
     @Override
-    String getPieceIdentiy() {
+    String getPieceIdentity() {
         return super.getColor() + "pn";
     }
 

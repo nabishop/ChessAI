@@ -2,6 +2,7 @@ package Models;
 
 import Utils.Scoring;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -18,6 +19,11 @@ public class Board {
     public Board(Piece[][] board, boolean whiteMoved) {
         this.whiteMoved = whiteMoved;
         this.board = board;
+    }
+
+    public Board(String toStringBoard) {
+        this.whiteMoved = true; // assumes board is not in original state
+        this.board = this.createBoardFromToString(toStringBoard);
     }
 
     public boolean isWhiteMoved() {
@@ -123,8 +129,6 @@ public class Board {
         if (movePiece == null) {
             return -1;
         }
-        //System.out.println("fromI: " + move.getFromI() + " fromJ: " + move.getFromJ());
-        //System.out.println("toI: " + move.getToI() + " toJ: " + move.getToJ());
 
         Piece toPiece = board[move.getToI()][move.getToJ()];
         // check if the piece is being moved to a spot of the same color
@@ -182,8 +186,8 @@ public class Board {
                 return -1;
             }
 
-            // cannot go sideways if there is no piece there
-            if ((jDiff > 0 && toPiece == null)) {
+            // cannot go just sideways
+            if ((jDiff > 0) && (iDiff == 0)) {
                 return -1;
             }
 
@@ -322,10 +326,46 @@ public class Board {
                 if (p == null) {
                     code.append("0");
                 } else {
-                    code.append(p.getPieceIdentiy());
+                    code.append(p.getPieceIdentity());
                 }
             }
         }
         return code.toString();
+    }
+
+    private Piece[][] createBoardFromToString(String toString) {
+        Piece[][] board = new Piece[BOARD_SIZE][BOARD_SIZE];
+
+        String[] splitStrings = toString.split("\n");
+
+        // create the board
+        for (int i = 0; i < splitStrings.length; i++) {
+            // skipping first and last rows since they are just fluff
+            if (i == 0 || i == splitStrings.length - 1) {
+                continue;
+            }
+
+            String row = splitStrings[i];
+            String noWhiteSpace = row.replace(" ", "");
+
+            // translate each piece to appropriate board piece
+            for (int j = 0; j < noWhiteSpace.length(); j++) {
+                // skipping first and last characters since they are just fluff
+                if (j == 0 || j == noWhiteSpace.length() - 1) {
+                    continue;
+                }
+
+                String id = noWhiteSpace.substring(j, j+1);
+                Piece boardPiece = null;
+                if (ModelConstants.ASCII_TO_PIECE.containsKey(id)) {
+                    boardPiece = ModelConstants.ASCII_TO_PIECE.get(id);
+                }
+
+                // -1 because of the filler first row/col values
+                board[i - 1][j - 1] = boardPiece;
+            }
+        }
+
+        return board;
     }
 }

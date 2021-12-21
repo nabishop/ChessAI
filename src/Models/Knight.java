@@ -2,11 +2,11 @@ package Models;
 
 public class Knight extends Piece {
     public Knight(String color) {
-        super(color, ModelScores.KNIGHT_SCORE);
+        super(color, ModelConstants.KNIGHT_SCORE);
     }
 
     @Override
-    String getPieceIdentiy() {
+    String getPieceIdentity() {
         return super.getColor() + "kt";
     }
 

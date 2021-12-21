@@ -2,11 +2,11 @@ package Models;
 
 public class Bishop extends Piece {
     public Bishop(String color) {
-        super(color, ModelScores.BISHOP_SCORE);
+        super(color, ModelConstants.BISHOP_SCORE);
     }
 
     @Override
-    String getPieceIdentiy() {
+    String getPieceIdentity() {
         return super.getColor() + "bp";
     }
 

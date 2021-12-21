@@ -2,11 +2,11 @@ package Models;
 
 public class Queen extends Piece {
     public Queen(String color) {
-        super(color, ModelScores.QUEEN_SCORE);
+        super(color, ModelConstants.QUEEN_SCORE);
     }
 
     @Override
-    String getPieceIdentiy() {
+    String getPieceIdentity() {
         return super.getColor() + "qn";
     }
 

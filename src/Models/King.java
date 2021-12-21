@@ -4,7 +4,7 @@ public class King extends Piece {
     private boolean moved = false;
 
     public King(String color) {
-        super(color, ModelScores.KING_SCORE);
+        super(color, ModelConstants.KING_SCORE);
     }
 
     public void setMoved(boolean moved) {
@@ -16,7 +16,7 @@ public class King extends Piece {
     }
 
     @Override
-    String getPieceIdentiy() {
+    String getPieceIdentity() {
         return super.getColor() + "kg";
     }
 
