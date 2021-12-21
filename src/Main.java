@@ -9,7 +9,7 @@ public class Main {
     private static final String MAP_FILE_PATH = "/Users/nicholasbishop/Documents/GitHub/ChessAI/board.properties";
 
     public static void main(String[] args) throws IOException {
-        boolean verbose = true;
+        boolean verbose = false;
         train(verbose);
         //fight();
     }
@@ -67,6 +67,7 @@ public class Main {
         int draws = 0;
 
         for (int run = 0; run < runTimes; run++) {
+            lastSixMoves.clear();
             System.out.println("Running #" + (run + 1) + "... (" + (runTimes - run) + " left)");
             Board board = new Board();
             MoveEngine blackMoveEngine = new MoveEngine(board, "black", boardMap);
@@ -98,14 +99,15 @@ public class Main {
                 lastSixMoves.add(newMove.getMove());
                 if (lastSixMoves.size() == 12) {
                     // last
-                    if (lastSixMoves.get(0).equals(lastSixMoves.get(4)) &&
+                    if ((lastSixMoves.get(0).equals(lastSixMoves.get(4)) &&
                             lastSixMoves.get(0).equals(lastSixMoves.get(8)) &&
                             lastSixMoves.get(1).equals(lastSixMoves.get(5)) &&
                             lastSixMoves.get(1).equals(lastSixMoves.get(9)) &&
                             lastSixMoves.get(2).equals(lastSixMoves.get(6)) &&
                             lastSixMoves.get(2).equals(lastSixMoves.get(10)) &&
                             lastSixMoves.get(3).equals(lastSixMoves.get(7)) &&
-                            lastSixMoves.get(3).equals(lastSixMoves.get(11))) {
+                            lastSixMoves.get(3).equals(lastSixMoves.get(11))) ||
+                            moves > 2000) {
                         draw = true;
                         draws++;
                         System.out.println("DRAW BY REPETITION");
@@ -113,6 +115,8 @@ public class Main {
                     }
                     lastSixMoves.remove(0);
                 }
+
+                System.out.println(lastSixMoves.size());
 
                 // check insufficient material (no pawns) both sides either
                 List<Piece> blackPieces = new ArrayList<>();
@@ -168,6 +172,10 @@ public class Main {
                     System.out.println(newMove.getMove().toString());
                     System.out.println(winner + " score: " + newMove.getScore());
                     System.out.println(board + "\n");
+                }
+
+                if (moves % 50 == 0) {
+                    System.out.println(moves + " Moves..");
                 }
 
                 moveHistory.add(newMove);
