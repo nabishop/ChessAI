@@ -196,7 +196,7 @@ public class MoveEngine {
             moves.add(evaluateAddMove(board, piece, startI, startJ, oneMove, startJ + 1, color));
         }
         // diag left if opposing piece
-        if (oneMoveInBound && startJ - 1 > 0 && board[oneMove][startJ - 1] != null) {
+        if (oneMoveInBound && startJ - 1 >= 0 && board[oneMove][startJ - 1] != null) {
             moves.add(evaluateAddMove(board, piece, startI, startJ, oneMove, startJ - 1, color));
         }
 
