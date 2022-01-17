@@ -1,13 +1,15 @@
+package UX;
+
 import Models.Move;
 
 import java.util.Scanner;
 
-public class UX {
+public class SystemIOUX {
+    private final Scanner n;
     private String aiColor;
     private String enemyColor;
-    private final Scanner n;
 
-    public UX() {
+    public SystemIOUX() {
         this.n = new Scanner(System.in);
         this.getUserColor();
     }

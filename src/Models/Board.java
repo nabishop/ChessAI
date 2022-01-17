@@ -1,13 +1,12 @@
 package Models;
 
-import Utils.Scoring;
+import Constants.BoardConstants;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
 public class Board {
-    private static final int BOARD_SIZE = 8;
+    private static final int BOARD_SIZE = BoardConstants.BOARD_SIZE;
     private final Piece[][] board;
     private String colorLastMove = "";
     private boolean whiteMoved = false;
@@ -364,7 +363,7 @@ public class Board {
                     continue;
                 }
 
-                String id = noWhiteSpace.substring(j, j+1);
+                String id = noWhiteSpace.substring(j, j + 1);
                 Piece boardPiece = null;
                 if (ModelConstants.ASCII_TO_PIECE.containsKey(id)) {
                     boardPiece = ModelConstants.ASCII_TO_PIECE.get(id);

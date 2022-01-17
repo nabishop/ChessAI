@@ -53,7 +53,7 @@ public class MovePossibility {
                 if (piece != null) {
                     score += (
                             (piece.getValue() + BoardHeatMap.centerHeatMap[i][j]) *
-                            (piece.getColor().equals(aiColor) ? 1 : -1)
+                                    (piece.getColor().equals(aiColor) ? 1 : -1)
                     );
 
                     // cannot move a piece if it is puts the king in check
@@ -74,7 +74,7 @@ public class MovePossibility {
         }
 
         score += (BoardHeatMap.getKingHeatMapValue(pieces, this.move, movingColor) *
-                        (movingColor.equals(aiColor) ? 1 : -1));
+                (movingColor.equals(aiColor) ? 1 : -1));
 
         if (move != null) {
             int moveI = move.getToI();

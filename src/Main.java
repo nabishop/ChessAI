@@ -1,5 +1,7 @@
 import Engine.MoveEngine;
 import Models.*;
+import UX.InterfaceUX;
+import UX.SystemIOUX;
 import Utils.Scoring;
 
 import java.io.*;
@@ -9,10 +11,16 @@ public class Main {
     private static final String MAP_FILE_PATH = "/Users/nicholasbishop/Documents/GitHub/ChessAI/board.properties";
 
     public static void main(String[] args) throws IOException {
-        boolean verbose = true;
-        train(verbose);
+        playUI();
+
+        //boolean verbose = true;
+        //train(verbose);
         //fight();
         //checkGameState();
+    }
+
+    private static void playUI() {
+        InterfaceUX a = new InterfaceUX();
     }
 
     private static void checkGameState() {
@@ -33,7 +41,7 @@ public class Main {
     }
 
     private static void fight() throws IOException {
-        UX ux = new UX();
+        SystemIOUX ux = new SystemIOUX();
         Map<String, Double> boardMap = loadBoardMap();
 
         Board board = new Board();

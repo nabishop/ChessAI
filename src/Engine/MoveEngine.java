@@ -2,7 +2,10 @@ package Engine;
 
 import Models.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -125,7 +128,7 @@ public class MoveEngine {
         }
 
         // if any moves could check the opponent, only do those, assume opp will check you
-        return checkKingMoves.size() > 0 ? checkKingMoves : moves;
+        return checkKingMoves.size() > 0 ? moves : moves;
     }
 
     private List<MovePossibility> getAllBishopMoves(Piece[][] board, Piece piece, int startI, int startJ, String color) {

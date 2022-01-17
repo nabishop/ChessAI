@@ -7,12 +7,12 @@ public class Rook extends Piece {
         super(color, ModelConstants.ROOK_SCORE);
     }
 
-    public void setMoved(boolean moved) {
-        this.moved = moved;
-    }
-
     public boolean isMoved() {
         return moved;
+    }
+
+    public void setMoved(boolean moved) {
+        this.moved = moved;
     }
 
     @Override
