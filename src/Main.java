@@ -19,8 +19,13 @@ public class Main {
         //checkGameState();
     }
 
-    private static void playUI() {
-        InterfaceUX a = new InterfaceUX();
+    private static void playUI() throws IOException {
+        SystemIOUX ux = new SystemIOUX();
+        Map<String, Double> boardMap = loadBoardMap();
+
+        Board board = new Board();
+        MoveEngine engine = new MoveEngine(board, ux.getAiColor(), boardMap);
+        InterfaceUX a = new InterfaceUX(board);
     }
 
     private static void checkGameState() {

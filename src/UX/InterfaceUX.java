@@ -15,8 +15,11 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
     private int xAdjustment;
     private int yAdjustment;
     private JLabel movingPiece;
+    private final Board internalLogicBoard;
 
-    public InterfaceUX() {
+    public InterfaceUX(Board b) {
+        this.internalLogicBoard = b;
+
         initializeBoard();
     }
 
@@ -31,8 +34,7 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
         this.board.addMouseListener(this);
         this.board.addMouseMotionListener(this);
 
-        Board b = new Board(); // temp board used for modeling our UX
-        Piece[][] pieces = b.getBoard();
+        Piece[][] pieces = this.internalLogicBoard.getBoard();
 
         int j = 0;
         for (Piece[] row : pieces) {
@@ -61,6 +63,10 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
         frame.setVisible(true);
     }
 
+    public void movePiece(int fromI, int fromJ, int toI, int toJ) {
+
+    }
+
     /*
      **  Add the selected chess piece to the dragging layer, so it can be moved
      */
@@ -78,7 +84,7 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
         this.xAdjustment = parentLocation.x - e.getX();
         this.yAdjustment = parentLocation.y - e.getY();
         this.movingPiece = (JLabel) c;
-        this.movingPiece.setLocation(e.getX() + this.xAdjustment, e.getY() + this.yAdjustment);
+        this.movingPiece.setLocation(e.getX() , e.getY() );
 
         add(this.movingPiece, JLayeredPane.DRAG_LAYER);
         setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
@@ -106,7 +112,7 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
         y = Math.min(y, yMax);
         y = Math.max(y, 0);
 
-        this.movingPiece.setLocation(x, y);
+        this.movingPiece.setLocation(me.getX(), me.getY());
     }
 
     /*
