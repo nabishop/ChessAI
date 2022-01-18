@@ -43,7 +43,6 @@ public class Main {
                 while (move == null) {
                     TimeUnit.SECONDS.sleep(1);
                     move = ux.getNextMove();
-                    System.out.println(move);
                 }
 
                 board.makeMove(move);

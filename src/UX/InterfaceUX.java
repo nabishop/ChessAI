@@ -12,6 +12,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMotionListener {
+    private final String BOARD_TITLE = "Chess Board";
+    private JFrame frame;
     private JPanel board;
     private JLabel movingPiece;
     private final Board internalLogicBoard;
@@ -58,16 +60,16 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
             j++;
         }
 
-        this.board.setPreferredSize(new Dimension(500, 500));
+        this.board.setPreferredSize(new Dimension(700, 700));
 
-        JFrame frame = new JFrame("Chess Board");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.add(this.board);
-        frame.setSize(500, 500);
-        frame.setResizable(true);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        this.frame = new JFrame(BOARD_TITLE);
+        this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.frame.add(this.board);
+        this.frame.setSize(700, 700);
+        this.frame.setResizable(true);
+        this.frame.pack();
+        this.frame.setLocationRelativeTo(null);
+        this.frame.setVisible(true);
     }
 
     public void movePiece(Move move) {
@@ -81,6 +83,8 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
         labelToMove.revalidate();
         labelToReplace.revalidate();
         this.board.repaint();
+
+        this.frame.setTitle(BOARD_TITLE + " - " + move);
     }
 
     /*
@@ -162,7 +166,6 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
     }
 
     public Move getNextMove() {
-        System.out.println(this.fromI + " " + this.fromJ + " " + this.toI + " " + this.toJ);
         if (this.toI > -1 && this.toJ > -1 && this.fromI > -1 && this.fromJ > -1) {
             Move m = new Move(this.fromI, this.fromJ, this.toI, this.toJ, 0);
 
