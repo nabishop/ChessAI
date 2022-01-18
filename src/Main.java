@@ -6,11 +6,12 @@ import Utils.Scoring;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
     private static final String MAP_FILE_PATH = "/Users/nicholasbishop/Documents/GitHub/ChessAI/board.properties";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         playUI();
 
         //boolean verbose = true;
@@ -19,13 +20,39 @@ public class Main {
         //checkGameState();
     }
 
-    private static void playUI() throws IOException {
-        SystemIOUX ux = new SystemIOUX();
+    private static void playUI() throws IOException, InterruptedException {
+        Board board = new Board();
+        InterfaceUX ux = new InterfaceUX(board);
+
+        SystemIOUX io = new SystemIOUX();
         Map<String, Double> boardMap = loadBoardMap();
 
-        Board board = new Board();
-        MoveEngine engine = new MoveEngine(board, ux.getAiColor(), boardMap);
-        InterfaceUX a = new InterfaceUX(board);
+        MoveEngine engine = new MoveEngine(board, io.getAiColor(), boardMap);
+
+        boolean whiteTurn = true;
+        System.out.println(board);
+        while (board.canGameContinue()) {
+            if ((whiteTurn && io.getAiColor().equals("white")) || (!whiteTurn && io.getAiColor().equals("black"))) {
+                MovePossibility newMove = engine.getNextBestMove();
+                board.makeMove(newMove.getMove());
+                ux.movePiece(newMove.getMove());
+
+                System.out.println("COMPUTER MOVED: " + newMove.getMove().toString());
+            } else {
+                Move move = null;
+                while (move == null) {
+                    TimeUnit.SECONDS.sleep(1);
+                    move = ux.getNextMove();
+                    System.out.println(move);
+                }
+
+                board.makeMove(move);
+            }
+
+
+            System.out.println(board + "\n");
+            whiteTurn = !whiteTurn;
+        }
     }
 
     private static void checkGameState() {

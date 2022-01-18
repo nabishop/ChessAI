@@ -76,7 +76,8 @@ public class Move implements Comparable<Move> {
         String tI = Integer.toString(8 - this.toI);
         String tJ = Character.toString('A' + this.toJ);
 
-        return "Move: FROM: " + fJ + "," + fI + " - TO: " + tJ + "," + tI;
+        return "Move: FROM: " + fJ + " ," + fI + " (" + this.fromI + "," + this.fromJ + ") - TO: " +
+                tJ + "," + tI + " (" + this.toI + "," + this.toJ + ")";
     }
 
     @Override

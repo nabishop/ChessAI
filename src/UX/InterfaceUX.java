@@ -2,6 +2,7 @@ package UX;
 
 import Constants.BoardConstants;
 import Models.Board;
+import Models.Move;
 import Models.Piece;
 
 import javax.swing.*;
@@ -14,9 +15,17 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
     private JPanel board;
     private JLabel movingPiece;
     private final Board internalLogicBoard;
+    private int fromI;
+    private int fromJ;
+    private int toI;
+    private int toJ;
 
     public InterfaceUX(Board b) {
         this.internalLogicBoard = b;
+        this.fromI = -1;
+        this.fromJ = -1;
+        this.toI = -1;
+        this.toJ = -1;
 
         initializeBoard();
     }
@@ -61,16 +70,23 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
         frame.setVisible(true);
     }
 
-    public void movePiece(int fromI, int fromJ, int toI, int toJ) {
+    public void movePiece(Move move) {
+        JPanel labelToMove = (JPanel) this.board.getComponent((move.getFromI() * 8) + move.getFromJ());
+        JPanel labelToReplace = (JPanel) this.board.getComponent((move.getToI() * 8) + move.getToJ());
 
+        labelToReplace.removeAll();
+        labelToReplace.add(labelToMove.getComponent(0));
+        labelToMove.removeAll();
+
+        labelToMove.revalidate();
+        labelToReplace.revalidate();
+        this.board.repaint();
     }
 
     /*
      **  Add the selected chess piece to the dragging layer, so it can be moved
      */
     public void mousePressed(MouseEvent e) {
-        System.out.println("MOUSE PRESSED: " + this.movingPiece);
-
         movingPiece = null;
         Component c = this.board.findComponentAt(e.getX(), e.getY());
 
@@ -78,8 +94,12 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
             return;
         }
 
+        int[] moveCords = getIJFromComponent(e.getX(), e.getY());
+        this.fromI = moveCords[0];
+        this.fromJ = moveCords[1];
+
         this.movingPiece = (JLabel) c;
-        this.movingPiece.setLocation(e.getX() , e.getY() );
+        this.movingPiece.setLocation(e.getX(), e.getY());
 
         add(this.movingPiece, JLayeredPane.DRAG_LAYER);
         setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
@@ -89,8 +109,6 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
      **  Move the chess piece around
      */
     public void mouseDragged(MouseEvent me) {
-        System.out.println("MOUSE DRAGGED: " + this.movingPiece);
-
         if (this.movingPiece == null) {
             return;
         }
@@ -103,7 +121,6 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
      */
     public void mouseReleased(MouseEvent e) {
         setCursor(null);
-        System.out.println("MOUSE RELEASED: " + this.movingPiece);
 
         if (this.movingPiece == null) {
             return;
@@ -114,17 +131,11 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
         remove(this.movingPiece);
         this.movingPiece.setVisible(true);
 
-        //  The drop location should be within the bounds of the chess board
-        int xMax = this.movingPiece.getWidth() - this.movingPiece.getWidth();
-        int x = Math.min(e.getX(), xMax);
-        x = Math.max(x, 0);
-
-        int yMax = this.movingPiece.getHeight() - this.movingPiece.getHeight();
-        int y = Math.min(e.getY(), yMax);
-        y = Math.max(y, 0);
-
         Component c = this.board.findComponentAt(e.getX(), e.getY());
-        System.out.println(c.toString());
+
+        int[] moveCords = getIJFromComponent(e.getX(), e.getY());
+        this.toI = moveCords[0];
+        this.toJ = moveCords[1];
 
         Container parent;
         if (c instanceof JPanel) {
@@ -136,10 +147,6 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
         parent.add(this.movingPiece);
         parent.revalidate();
         this.movingPiece = null;
-
-        for (Component co : this.board.getComponents()) {
-            System.out.println(co.toString());
-        }
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -152,5 +159,29 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
     }
 
     public void mouseExited(MouseEvent e) {
+    }
+
+    public Move getNextMove() {
+        System.out.println(this.fromI + " " + this.fromJ + " " + this.toI + " " + this.toJ);
+        if (this.toI > -1 && this.toJ > -1 && this.fromI > -1 && this.fromJ > -1) {
+            Move m = new Move(this.fromI, this.fromJ, this.toI, this.toJ, 0);
+
+            this.fromI = -1;
+            this.fromJ = -1;
+            this.toI = -1;
+            this.toJ = -1;
+
+            return m;
+        }
+        return null;
+    }
+
+    private int[] getIJFromComponent(int x, int y) {
+        Dimension gridSize = this.board.getComponent(0).getSize();
+
+        int i = Math.floorDiv(y, gridSize.width);
+        int j = Math.floorDiv(x, gridSize.height);
+
+        return new int[]{i, j};
     }
 }
