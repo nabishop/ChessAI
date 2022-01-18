@@ -41,9 +41,8 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
                 JPanel square = new JPanel(new BorderLayout());
                 square.setBackground((i + j) % 2 == 0 ? Color.red : Color.white);
 
-                if (p != null) {
-                    square.add(new JLabel(p.toString(), SwingConstants.CENTER));
-                }
+                String pieceStr = p == null ? "" : p.toString();
+                square.add(new JLabel(pieceStr, SwingConstants.CENTER));
                 this.board.add(square);
                 i++;
             }
@@ -145,12 +144,15 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
             parent.add(this.movingPiece);
         } else {
             parent = c.getParent();
-            parent.remove(0);
+            parent.removeAll();
             parent.add(this.movingPiece);
-            parent.revalidate();
         }
         parent.revalidate();
         this.movingPiece = null;
+
+        for (Component co : this.board.getComponents()) {
+            System.out.println(co.toString());
+        }
     }
 
     public void mouseClicked(MouseEvent e) {
