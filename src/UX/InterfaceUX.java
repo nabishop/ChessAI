@@ -12,8 +12,6 @@ import java.awt.event.MouseMotionListener;
 
 public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMotionListener {
     private JPanel board;
-    private int xAdjustment;
-    private int yAdjustment;
     private JLabel movingPiece;
     private final Board internalLogicBoard;
 
@@ -80,9 +78,6 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
             return;
         }
 
-        Point parentLocation = c.getParent().getLocation();
-        this.xAdjustment = parentLocation.x - e.getX();
-        this.yAdjustment = parentLocation.y - e.getY();
         this.movingPiece = (JLabel) c;
         this.movingPiece.setLocation(e.getX() , e.getY() );
 
@@ -99,18 +94,6 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
         if (this.movingPiece == null) {
             return;
         }
-
-        //  The drag location should be within the bounds of the chess board
-
-        int x = me.getX() + this.xAdjustment;
-        int xMax = this.movingPiece.getWidth() - this.movingPiece.getWidth();
-        x = Math.min(x, xMax);
-        x = Math.max(x, 0);
-
-        int y = me.getY() + this.yAdjustment;
-        int yMax = this.movingPiece.getHeight() - this.movingPiece.getHeight();
-        y = Math.min(y, yMax);
-        y = Math.max(y, 0);
 
         this.movingPiece.setLocation(me.getX(), me.getY());
     }
@@ -146,13 +129,11 @@ public class InterfaceUX extends JLayeredPane implements MouseListener, MouseMot
         Container parent;
         if (c instanceof JPanel) {
             parent = (Container) c;
-            parent.removeAll();
-            parent.add(this.movingPiece);
         } else {
             parent = c.getParent();
-            parent.removeAll();
-            parent.add(this.movingPiece);
         }
+        parent.removeAll();
+        parent.add(this.movingPiece);
         parent.revalidate();
         this.movingPiece = null;
 
